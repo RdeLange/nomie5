@@ -87,7 +87,6 @@
     "git-release-notes": "^4.0.1",
     "gitlog": "^4.0.0",
     "html2canvas": "^1.0.0-rc.5",
-    "husky": "^4.2.5",
     "i18next": "^17.0.16",
     "jest": "^26.4.0",
     "json-loader": "^0.5.7",

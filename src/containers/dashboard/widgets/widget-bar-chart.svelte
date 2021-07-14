@@ -24,8 +24,10 @@
       height={100}
       showSelected={false}
       type={widget.type == 'linechart' ? 'line' : 'bar'}
+      showstats={widget.stats2}
       color={getWidgetColor(widget)}
       labels={widget.stats.chart.values.map((point) => point.x)}
+      mainlabel={widget.element.id}
       points={widget.stats.chart.values}
       hideXTicks={widget.size == 'sm'}
       hideYTicks={widget.size == 'sm'}

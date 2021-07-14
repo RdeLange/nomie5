@@ -100,6 +100,7 @@ export interface WidgetConfig {
   element?: ITrackableElement;
   id?: string;
   size?: "sm" | "md" | "lg";
+  stats2?: "none" | "avg" | "sma-7" | "sma-15" | "sma-30" | "ema-7" | "ema-15" | "ema-30";
   type?: string;
   timeRange?: WidgetTimeFrame;
   includeAvg?: boolean;
@@ -130,6 +131,7 @@ export class Widget {
   public math?: string;
   public positivity?: any;
   public size?: "sm" | "md" | "lg" = "md";
+  public stats2?: "none" | "avg" | "sma-7" | "sma-15" | "sma-30" | "ema-7" | "ema-15" | "ema-30" = "none";
   public stats?: any;
   public timeFormat?: string = "h:mm a";
   public timeRange?: WidgetTimeFrame;
@@ -143,6 +145,7 @@ export class Widget {
     this.type = payload.type;
     this.description = payload.description;
     this.size = payload.size || "md";
+    this.stats2 = payload.stats2 || "none";
     // Compare Value
     if (typeof payload.compareValue == "string") {
       payload.compareValue = parseFloat(payload.compareValue);

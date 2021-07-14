@@ -8,10 +8,12 @@
   import { Interact } from "../../store/interact";
   import ignoreArrayZeros from "../../modules/stats/ignore-zeros";
   import _ from "lodash";
+  import statUtils from "./bar-chart-2-stat-utils"
 
   export let labels = [];
   export let height = 200;
 
+  export let mainlabel = "";
   export let title = "";
   export let color = "#4d84a1";
   export let points: any;
@@ -24,6 +26,7 @@
   // export let beginAtZero: boolean = true;
   export let showSelected: boolean = true;
   export let ignoreZero: boolean = false;
+  export let showstats: string = "none";
 
   // Generate a random ID for this Component
   const chartId = `chart-${nid()}`;
@@ -32,11 +35,19 @@
   let _canvas;
   let theChart;
   let lastPoints = [];
+  let lastshowstats = showstats;
+  
 
   export let selected = undefined;
 
   $: if (points && theChart && points.map((p) => p.y).join() !== lastPoints) {
     lastPoints = points.map((p) => p.y).join();
+    loadData();
+  }
+  
+  // make sure the chart updates when other statistic view is selected in widget editor
+  $: if (showstats !== lastshowstats) {
+    lastshowstats = showstats;
     loadData();
   }
 
@@ -67,6 +78,8 @@
         data: points.map((row) => row.y),
         maxBarThickness: 34,
         minBarLength: 2,
+        label: mainlabel.charAt(0).toUpperCase() + mainlabel.slice(1),
+        order: 2,
       },
     ];
     let dataset = theChart.data.datasets[0].data;
@@ -76,6 +89,13 @@
     }
 
     theChart.data.datasets[0].data = dataset;
+    // if statistics are defined as property, include them as the second dataset
+    if (showstats != 'none') {
+      let datasetMain = theChart.data.datasets[0];
+      theChart.data.datasets[1] = statUtils.defineStatsDataset(datasetMain,showstats);
+    }
+    
+    
     theChart.update();
   }
 
@@ -108,7 +128,17 @@
         responsive: true,
         defaultFontSize: 10,
         legend: {
-          display: false,
+          display: true,
+          position: "chartArea",
+          labels: {
+            filter(legendItem, data) {
+              return legendItem.text;
+            },
+            boxWidth: 5,
+            boxHeight: 2,
+            usePointStyle: true,
+            pointStyle: "circle",
+          },
         },
         maintainAspectRatio: false,
         title: {
@@ -174,6 +204,31 @@
   });
 </script>
 
+<div class="wrapper active-{activeIndex}" style="--chart-color:{color}">
+  {#if selected && selected.unit == "day" && showSelected}
+    <div class="selected">
+      <button
+        on:click={() => {
+          selected = undefined;
+          Interact.focusDate(undefined);
+        }}
+      >
+        <NIcon name="close" className="fill-white" size="12" />
+      </button>
+      <button
+        on:click={() => {
+          Interact.onThisDay(selected.date.toDate());
+        }}
+      >
+        <span class="mr-1 text-sm date faded">{xFormat(selected.x)}</span>
+        <span class="d-value">{yFormat(selected.y)}</span>
+        <NIcon name="chevronRight" className="fill-white" size="12" />
+      </button>
+    </div>
+  {/if}
+  <canvas id={chartId} bind:this={_canvas} width="100%" {height} />
+</div>
+
 <style>
   .wrapper {
     position: relative;
@@ -207,26 +262,3 @@
     border-right: solid 1px rgba(255, 255, 255, 0.1);
   }
 </style>
-
-<div class="wrapper active-{activeIndex}" style="--chart-color:{color}">
-  {#if selected && selected.unit == 'day' && showSelected}
-    <div class="selected">
-      <button
-        on:click={() => {
-          selected = undefined;
-          Interact.focusDate(undefined);
-        }}>
-        <NIcon name="close" className="fill-white" size="12" />
-      </button>
-      <button
-        on:click={() => {
-          Interact.onThisDay(selected.date.toDate());
-        }}>
-        <span class="mr-1 text-sm date faded">{xFormat(selected.x)}</span>
-        <span class="d-value">{yFormat(selected.y)}</span>
-        <NIcon name="chevronRight" className="fill-white" size="12" />
-      </button>
-    </div>
-  {/if}
-  <canvas id={chartId} bind:this={_canvas} width="100%" {height} />
-</div>

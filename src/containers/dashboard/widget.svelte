@@ -54,12 +54,19 @@
   function widgetActions() {
     const addOn = {
       icon: "tracker",
-      title: ` ${widget.element.type == "person" ? Lang.t("people.check-in", `Check-in`) : Lang.t("general.track-value", `Track Value`)}`,
+      title: ` ${
+        widget.element.type == "person"
+          ? Lang.t("people.check-in", `Check-in`)
+          : Lang.t("general.track-value", `Track Value`)
+      }`,
       click: async () => {
         if (widget.element.type == "person") {
           Interact.person(widget.element.id);
         } else if (widget.element.type == "tracker") {
-          const input = new TrackerInputer(widget.element.obj, $TrackerStore.trackers);
+          const input = new TrackerInputer(
+            widget.element.obj,
+            $TrackerStore.trackers
+          );
           let note = await input.getNoteString();
           ActiveLogStore.journal(new NLog({ note }));
         }
@@ -100,7 +107,7 @@
   }
 </script>
 
-{#if widget && widget.type !== 'text'}
+{#if widget && widget.type !== "text"}
   <div class="dashboard-widget {getClass(widget)}" {id}>
     <div class="widget-header n-row">
       <TrackerSmallBlock
@@ -119,7 +126,7 @@
         className="p-1"
         on:click={() => {
           DashboardStore.widgetOptions(widget, widgetOptionSelected);
-          dispatch('click');
+          dispatch("click");
         }}
       >
         <Icon name="settings" style="fill: var(--color-inverse-2)" size="16" />
@@ -127,23 +134,23 @@
     </div>
     <div class="widget-main">
       {#if widget.stats}
-        {#if ['barchart', 'linechart'].indexOf(widget.type) > -1 && widget.stats && widget.stats.chart}
+        {#if ["barchart", "linechart"].indexOf(widget.type) > -1 && widget.stats && widget.stats.chart}
           <WidgetBarChart {widget} />
-        {:else if widget.type == 'value' && widget.stats}
+        {:else if widget.type == "value" && widget.stats}
           <WidgetValue {widget} />
-        {:else if widget.type == 'note' && widget.stats}
+        {:else if widget.type == "note" && widget.stats}
           <WidgetNote {widget} />
-        {:else if widget.type == 'what-time'}
+        {:else if widget.type == "what-time"}
           <WidgetWhatTime {widget} />
-        {:else if widget.type == 'last-used'}
+        {:else if widget.type == "last-used"}
           <WidgetLastUsed {widget} />
-        {:else if widget.type == 'positivity' && widget.stats}
+        {:else if widget.type == "positivity" && widget.stats}
           <WidgetPositivityPie {widget} />
-        {:else if widget.type == 'min-max' && widget.stats}
+        {:else if widget.type == "min-max" && widget.stats}
           <WidgetMinMax {widget} />
-        {:else if widget.type == 'map' && widget.stats}
+        {:else if widget.type == "map" && widget.stats}
           <WidgetMap {widget} />
-        {:else if widget.type == 'streak' && widget.stats}
+        {:else if widget.type == "streak" && widget.stats}
           <WidgetStreak {widget} />
         {:else}
           <div class="value">Unknown {widget.type}</div>
@@ -156,7 +163,12 @@
     </div>
     <div class="widget-footer n-row">
       {#if widget.timeRange}
-        <Text size="xs" className="text-center flex-grow text-uppercase font-weight-bold">{widget.getLabel()}</Text>
+        <Text
+          size="xs"
+          className="text-center flex-grow text-uppercase font-weight-bold"
+          >{widget.getLabel()}</Text
+        >
+        
       {/if}
     </div>
   </div>
@@ -165,7 +177,7 @@
     {id}
     class="dashboard-text type-text text-center widget-size-{widget.size}"
     on:click={() => {
-      dispatch('click');
+      dispatch("click");
     }}
   >
     {widget.description}
