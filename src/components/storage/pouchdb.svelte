@@ -57,12 +57,14 @@
         syncEnabled: true,
       });
       state.canSync = true;
+      console.log(remote);
       pouchEngine.saveRemote(remote);
+      
     },
     startSync() {
       state.syncing = true;
       state.remote.syncEnabled = true;
-      pouchEngine.saveRemote(state.remote);
+      //pouchEngine.saveRemote(state.remote);
       pouchEngine.startSync();
     },
     stopSync() {
