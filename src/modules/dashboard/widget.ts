@@ -100,7 +100,7 @@ export interface WidgetConfig {
   element?: ITrackableElement;
   id?: string;
   size?: "sm" | "md" | "lg";
-  stats2?: "none" | "avg" | "sma-7" | "sma-15" | "sma-30" | "ema-7" | "ema-15" | "ema-30";
+  stats2?: "none" | "avg" | "sma-7" | "sma-15" | "sma-30" | "ema-7" | "ema-15" | "ema-30" | "split-11" | "split-12" | "split-13" | "cumm";
   type?: string;
   timeRange?: WidgetTimeFrame;
   includeAvg?: boolean;
@@ -114,6 +114,10 @@ export interface WidgetConfig {
   positivity?: any;
   stats?: any;
   lastUsed?: any;
+  secElement1?: ITrackableElement;
+  secElement2?: ITrackableElement;
+  secStats1?: any;
+  secStats2?: any;
 }
 
 export class Widget {
@@ -131,12 +135,16 @@ export class Widget {
   public math?: string;
   public positivity?: any;
   public size?: "sm" | "md" | "lg" = "md";
-  public stats2?: "none" | "avg" | "sma-7" | "sma-15" | "sma-30" | "ema-7" | "ema-15" | "ema-30" = "none";
+  public stats2?: "none" | "avg" | "sma-7" | "sma-15" | "sma-30" | "ema-7" | "ema-15" | "ema-30" | "split-11" | "split-12" | "split-13" | "cumm" = "none";
   public stats?: any;
   public timeFormat?: string = "h:mm a";
   public timeRange?: WidgetTimeFrame;
   public type?: string = "value";
   public loading?: boolean = false;
+  public secElement1?: TrackableElement;
+  public secElement2?: TrackableElement;
+  public secStats1?: any;
+  public secStats2?: any;
 
   constructor(payload?: WidgetConfig) {
     payload = payload || {};
@@ -162,6 +170,12 @@ export class Widget {
     // If an element
     if (payload.element) {
       this.element = new TrackableElement({ id: payload.element.id, type: payload.element.type });
+    }
+    if (payload.secElement1) {
+      this.secElement1 = new TrackableElement({ id: payload.secElement1.id, type: payload.secElement1.type });
+    }
+    if (payload.secElement2) {
+      this.secElement2 = new TrackableElement({ id: payload.secElement2.id, type: payload.secElement2.type });
     }
   }
 

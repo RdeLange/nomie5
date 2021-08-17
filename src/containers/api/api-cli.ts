@@ -116,10 +116,8 @@ export default class NomieAPICli {
       headers: finalHeaders,
       body: JSON.stringify(payload),
     });
-
     // Get Payload back
     let cbPayload = await results.json();
-
     // The key is no longer valid
     if (cbPayload.results.destroy) {
       throw new Error('Server is saying that is an invalid api/private key combo.');

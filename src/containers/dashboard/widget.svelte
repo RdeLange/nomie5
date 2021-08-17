@@ -18,6 +18,7 @@
   import WidgetWhatTime from "./widgets/widget-what-time.svelte";
   import WidgetLastUsed from "./widgets/widget-last-used.svelte";
   import WidgetBarChart from "./widgets/widget-bar-chart.svelte";
+  import WidgetScatterChart from "./widgets/widget-scatter-chart.svelte";
   import WidgetValue from "./widgets/widget-value-display.svelte";
   import WidgetNote from "./widgets/widget-note.svelte";
   import WidgetMinMax from "./widgets/widget-min-max.svelte";
@@ -25,7 +26,7 @@
   import WidgetMap from "./widgets/widget-map.svelte";
   import WidgetStreak from "./widgets/widget-streak.svelte";
 
-  import { LastUsed } from "../../store/last-used";
+  import { LastUsed } from "../../store/last-used"; 
   import { Interact } from "../../store/interact";
   import { DashboardStore } from "../../store/dashboard-store";
   import Spinner from "../../components/spinner/spinner.svelte";
@@ -123,7 +124,7 @@
       <Button
         size="xs"
         color="clear"
-        className="p-1"
+        className="p-1" 
         on:click={() => {
           DashboardStore.widgetOptions(widget, widgetOptionSelected);
           dispatch("click");
@@ -136,6 +137,8 @@
       {#if widget.stats}
         {#if ["barchart", "linechart"].indexOf(widget.type) > -1 && widget.stats && widget.stats.chart}
           <WidgetBarChart {widget} />
+        {:else if widget.type == "scatterchart" && widget.stats}
+          <WidgetScatterChart {widget} />  
         {:else if widget.type == "value" && widget.stats}
           <WidgetValue {widget} />
         {:else if widget.type == "note" && widget.stats}

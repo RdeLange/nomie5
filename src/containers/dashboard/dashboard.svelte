@@ -67,7 +67,11 @@
   let editMode = false; // Toggle Edit mode
   let activePage = 0; // activePage - which page we're on in the array of dasboards
   // let lastActivePage; // last Active for managing reactiveness
-  let activeDashboard: Dashboard = { id: "fake", label: "Loading...", widgets: [] }; // Set a default dasboard
+  let activeDashboard: Dashboard = {
+    id: "fake",
+    label: "Loading...",
+    widgets: [],
+  }; // Set a default dasboard
   let stopRefresh;
   let loading = false;
   let firstDayOfWeek: "1" | "2" = "1";
@@ -159,16 +163,60 @@
     // Get the Logs based on the Type provided
     if (widget.element && widget.element.type == "tracker") {
       // Tracker Search
-      logs = await LedgerStore.queryTag(widget.element.id, start, end);
+      logs[0] = await LedgerStore.queryTag(widget.element.id, start, end);
     } else if (widget.element && widget.element.type == "person") {
       // Person Search
-      logs = await LedgerStore.queryPerson(widget.element.id, start, end);
+      logs[0] = await LedgerStore.queryPerson(widget.element.id, start, end);
     } else if (widget.element && widget.element.type == "context") {
       // Context Search
-      logs = await LedgerStore.queryContext(widget.element.id, start, end);
+      logs[0] = await LedgerStore.queryContext(widget.element.id, start, end);
     } else if (widget.element) {
       // Generic Search
-      logs = await LedgerStore.queryAll(widget.element.id, start, end);
+      logs[0] = await LedgerStore.queryAll(widget.element.id, start, end);
+    }
+
+    if (widget.secElement1 && widget.secElement1.type == "tracker") {
+      // Tracker Search
+      logs[1] = await LedgerStore.queryTag(widget.secElement1.id, start, end);
+    } else if (widget.secElement1 && widget.secElement1.type == "person") {
+      // Person Search
+      logs[1] = await LedgerStore.queryPerson(
+        widget.secElement1.id,
+        start,
+        end
+      );
+    } else if (widget.secElement1 && widget.secElement1.type == "context") {
+      // Context Search
+      logs[1] = await LedgerStore.queryContext(
+        widget.secElement1.id,
+        start,
+        end
+      );
+    } else if (widget.secElement1) {
+      // Generic Search
+      logs[1] = await LedgerStore.queryAll(widget.secElement1.id, start, end);
+    }
+
+    if (widget.secElement2 && widget.secElement2.type == "tracker") {
+      // Tracker Search
+      logs[2] = await LedgerStore.queryTag(widget.secElement2.id, start, end);
+    } else if (widget.secElement2 && widget.secElement2.type == "person") {
+      // Person Search
+      logs[2] = await LedgerStore.queryPerson(
+        widget.secElement2.id,
+        start,
+        end
+      );
+    } else if (widget.secElement2 && widget.secElement2.type == "context") {
+      // Context Search
+      logs[2] = await LedgerStore.queryContext(
+        widget.secElement2.id,
+        start,
+        end
+      );
+    } else if (widget.secElement2) {
+      // Generic Search
+      logs[2] = await LedgerStore.queryAll(widget.secElement2.id, start, end);
     }
     return logs;
   }
@@ -186,7 +234,9 @@
         icon: "edit",
       },
       {
-        title: `${Lang.t("general.delete", "Delete")} ${activeDashboard.label}...`,
+        title: `${Lang.t("general.delete", "Delete")} ${
+          activeDashboard.label
+        }...`,
         click: deleteDashboard,
         icon: "delete",
       },
@@ -228,6 +278,7 @@
       const statsV5 = new StatsProcessor({});
       // Generate Stats
       widget.math = widget.math || (widget.element.obj || {}).math || "sum";
+      
       // Get dayjs Start Date
       const fromDate = dayjs(start);
       const toDate = dayjs(end);
@@ -250,7 +301,7 @@
       }
       // Setup the Config to Pass to Stats
       const statsConfig: any = {
-        rows: widget.logs,
+        rows: widget.logs[0],
         fromDate,
         toDate,
         mode,
@@ -260,6 +311,35 @@
       // Generate the Stats
       widget.stats = statsV5.generate(statsConfig);
 
+      // Setup the Config to Pass to Secstats1
+      if (widget.secElement1) {
+        let secstat1math = (widget.secElement1.obj || {}).math || "sum";
+        const secstats1Config: any = {
+          rows: widget.logs[1],
+          fromDate,
+          toDate,
+          mode,
+          math: secstat1math,
+          trackableElement: widget.secElement1,
+        };
+        // Generate the Stats
+        widget.secStats1 = statsV5.generate(secstats1Config);
+      }
+
+      // Setup the Config to Pass to Secstats2
+      if (widget.secElement2) {
+        let secstat2math = (widget.secElement2.obj || {}).math || "sum";
+        const secstats2Config: any = {
+          rows: widget.logs[2],
+          fromDate,
+          toDate,
+          mode,
+          math: secstat2math,
+          trackableElement: widget.secElement2,
+        };
+        // Generate the Stats
+        widget.secStats2 = statsV5.generate(secstats2Config);
+      }
       // Generate the Positivity
       widget.positivity = positivityFromLogs(widget.logs, widget.element);
     }
@@ -285,7 +365,10 @@
     if (dboard) {
       for (let i = 0; i < dboard.widgets.length; i++) {
         // Set the widget
-        const widget: Widget = dboard.widgets[i] instanceof Widget ? dboard.widgets[i] : new Widget(dboard.widgets[i]);
+        const widget: Widget =
+          dboard.widgets[i] instanceof Widget
+            ? dboard.widgets[i]
+            : new Widget(dboard.widgets[i]);
         let start = widget.getStartDate(firstDayOfWeek);
         let end = widget.getEndDate(firstDayOfWeek);
 
@@ -306,7 +389,9 @@
 
     if (activeDashboard.widgets.length) {
       for (let i = 0; i < activeDashboard.widgets.length; i++) {
-        activeDashboard.widgets[i] = await getWidgetStats(activeDashboard.widgets[i]);
+        activeDashboard.widgets[i] = await getWidgetStats(
+          activeDashboard.widgets[i]
+        );
       }
     }
 
@@ -320,16 +405,55 @@
     // Loop over the widgets - convert them to real widgets.
     loading = true;
     try {
-      dashboards[$DashboardStore.activeIndex] = dashboards[$DashboardStore.activeIndex] || new Dashboard();
-      dashboards[$DashboardStore.activeIndex].widgets = dashboards[$DashboardStore.activeIndex].widgets.map((widget) => {
+      dashboards[$DashboardStore.activeIndex] =
+        dashboards[$DashboardStore.activeIndex] || new Dashboard();
+      dashboards[$DashboardStore.activeIndex].widgets = dashboards[
+        $DashboardStore.activeIndex
+      ].widgets.map((widget) => {
         // Set widget
         let thisWidget = widget instanceof Widget ? widget : new Widget(widget);
         // If it's a Tracker - and the tracker exists
         if (thisWidget.element && thisWidget.element.type == "tracker") {
           thisWidget.element.obj = TrackerStore.getByTag(thisWidget.element.id);
           // If it's a person and the person exists
-        } else if (thisWidget.element && thisWidget.element.type == "person" && people[thisWidget.element.id]) {
+        } else if (
+          thisWidget.element &&
+          thisWidget.element.type == "person" &&
+          people[thisWidget.element.id]
+        ) {
           thisWidget.element.obj = people[thisWidget.element.id];
+        }
+
+        if (
+          thisWidget.secElement1 &&
+          thisWidget.secElement1.type == "tracker"
+        ) {
+          thisWidget.secElement1.obj = TrackerStore.getByTag(
+            thisWidget.secElement1.id
+          );
+          // If it's a person and the person exists
+        } else if (
+          thisWidget.secElement1 &&
+          thisWidget.secElement1.type == "person" &&
+          people[thisWidget.secElement1.id]
+        ) {
+          thisWidget.secElement1.obj = people[thisWidget.secElement1.id];
+        }
+
+        if (
+          thisWidget.secElement2 &&
+          thisWidget.secElement2.type == "tracker"
+        ) {
+          thisWidget.secElement2.obj = TrackerStore.getByTag(
+            thisWidget.secElement2.id
+          );
+          // If it's a person and the person exists
+        } else if (
+          thisWidget.secElement2 &&
+          thisWidget.secElement2.type == "person" &&
+          people[thisWidget.secElement2.id]
+        ) {
+          thisWidget.secElement2.obj = people[thisWidget.secElement2.id];
         }
         return thisWidget;
       });
@@ -355,7 +479,10 @@
 
   async function deleteWidget(widget: Widget) {
     let confirmed = await Interact.confirm(
-      `${Lang.t("general.remove", "Remove")} ${widget.getTitle()} ${Lang.t("general.widget", "widget")}?`,
+      `${Lang.t("general.remove", "Remove")} ${widget.getTitle()} ${Lang.t(
+        "general.widget",
+        "widget"
+      )}?`,
       "Are you sure you want to remove this widget from this dashboard?"
     );
     if (confirmed) {
@@ -416,7 +543,10 @@
   }
 
   async function deleteDashboard() {
-    let confirmed = await Interact.confirm(`Delete ${activeDashboard.label} dashboard?`, "This cannot be undone, just rebuilt.");
+    let confirmed = await Interact.confirm(
+      `Delete ${activeDashboard.label} dashboard?`,
+      "This cannot be undone, just rebuilt."
+    );
     if (confirmed) {
       await DashboardStore.delete(activeDashboard);
     }
@@ -444,7 +574,10 @@
 
     Interact.popmenu({
       buttons,
-      title: `${Lang.t("dashboard.select-dashboard-to-move-widget", "Move widget to which dashboard?")}`,
+      title: `${Lang.t(
+        "dashboard.select-dashboard-to-move-widget",
+        "Move widget to which dashboard?"
+      )}`,
     });
   }
 
@@ -468,16 +601,33 @@
   });
 </script>
 
-<NLayout className="dasboard" headerClassNames="fill-header" pageTitle="Dashboard" showTabs={true}>
+<NLayout
+  className="dasboard"
+  headerClassNames="fill-header"
+  pageTitle="Dashboard"
+  showTabs={true}
+>
   <header slot="header">
     <Toolbar>
-      <Button color="none" shape="circle" className="tap-icon" on:click={() => SearchStore.view('history')}>
+      <Button
+        color="none"
+        shape="circle"
+        className="tap-icon"
+        on:click={() => SearchStore.view("history")}
+      >
         <Icon name="search" size="24" />
       </Button>
-      <HScroller centerIfPossible activeIndex={$DashboardStore.activeIndex} className="n-board-tabs">
+      <HScroller
+        centerIfPossible
+        activeIndex={$DashboardStore.activeIndex}
+        className="n-board-tabs"
+      >
         {#each dashboards || [] as board, i (board.id)}
           <button
-            class="tab board-{board.id} truncate-1 {i == $DashboardStore.activeIndex ? 'selected' : 'inactive'}"
+            class="tab board-{board.id} truncate-1 {i ==
+            $DashboardStore.activeIndex
+              ? 'selected'
+              : 'inactive'}"
             on:click={() => {
               DashboardStore.toIndex(i);
             }}
@@ -495,24 +645,47 @@
     <div class="container h-100">
       {#if editMode}
         <div class="px-2 mt-2 mb-2 n-toolbar n-row">
-          <Input type="text" placeholder="Dashboard Label" bind:value={activeDashboard.label} />
-          <Button color="clear" text className="text-primary-bright" on:click={done}>
-            {!editMode ? Lang.t('general.edit', 'Edit') : Lang.t('general.done', 'Done')}
+          <Input
+            type="text"
+            placeholder="Dashboard Label"
+            bind:value={activeDashboard.label}
+          />
+          <Button
+            color="clear"
+            text
+            className="text-primary-bright"
+            on:click={done}
+          >
+            {!editMode
+              ? Lang.t("general.edit", "Edit")
+              : Lang.t("general.done", "Done")}
           </Button>
         </div>
         <hr class="my-3 divider center" />
       {/if}
       {#if !editMode && activeDashboard && activeDashboard.widgets}
-        <Swipeable on:left={DashboardStore.next} on:right={DashboardStore.previous}>
-          <div class="dashboard-wrapper" on:swipeleft={DashboardStore.next} on:swiperight={DashboardStore.previous}>
-
+        <Swipeable
+          on:left={DashboardStore.next}
+          on:right={DashboardStore.previous}
+        >
+          <div
+            class="dashboard-wrapper"
+            on:swipeleft={DashboardStore.next}
+            on:swiperight={DashboardStore.previous}
+          >
             {#if people && trackers}
               {#if activeDashboard.widgets.length == 0}
                 <Empty
                   emoji="💹"
-                  title={Lang.t('general.dashboard', 'Dashboard')}
-                  description={Lang.t('dashboard.empty-message', 'Mix and match charts, stats, and other widgets to create your own custom views of your life.')}
-                  buttonLabel={Lang.t('dashboard.add-a-widget', 'Add a Widget...')}
+                  title={Lang.t("general.dashboard", "Dashboard")}
+                  description={Lang.t(
+                    "dashboard.empty-message",
+                    "Mix and match charts, stats, and other widgets to create your own custom views of your life."
+                  )}
+                  buttonLabel={Lang.t(
+                    "dashboard.add-a-widget",
+                    "Add a Widget..."
+                  )}
                   buttonClick={newWidget}
                 />
               {/if}
@@ -529,13 +702,17 @@
                 />
               {/each}
             {/if}
-
           </div>
         </Swipeable>
         {#if activeDashboard && activeDashboard.widgets && activeDashboard.widgets.length}
           <div class="mb-2 board-actions filler">
-            <Button size="sm" color="transparent" className="mt-4 text-primary-bright" on:click={newWidget}>
-              {Lang.t('dashboard.add-a-widget', 'Add a Widget...')}
+            <Button
+              size="sm"
+              color="transparent"
+              className="mt-4 text-primary-bright"
+              on:click={newWidget}
+            >
+              {Lang.t("dashboard.add-a-widget", "Add a Widget...")}
             </Button>
           </div>
         {/if}
@@ -561,10 +738,16 @@
                 <Icon name="delete" />
               </Button>
             </div>
-            {#if item.type == 'text'}
+            {#if item.type == "text"}
               <Text size="md" truncate>{item.description}</Text>
             {:else}
-              <TrackerSmallBlock xs truncate novalue element={item.element} value={item.type} />
+              <TrackerSmallBlock
+                xs
+                truncate
+                novalue
+                element={item.element}
+                value={item.type}
+              />
             {/if}
             <div slot="right" class="pr-2 text-sm text-faded-2">
               {#if item.timeRange}{item.timeRange.getLabel()}{/if}
@@ -572,12 +755,11 @@
                 <Icon name="menu" />
               </div>
             </div>
-
           </ListItem>
         </SortableList>
       {:else}
         <div class="p-4 mt-4 text-center">
-          <Text size="sm" faded>{Lang.t('general.loading', 'Loading')}...</Text>
+          <Text size="sm" faded>{Lang.t("general.loading", "Loading")}...</Text>
         </div>
       {/if}
     </div>
@@ -592,14 +774,15 @@
 <Modal show={editingWidget !== undefined}>
   <div class="n-toolbar-grid" slot="header">
     <div class="left">
-      <Button color="primary" type="clear" on:click={clearEditing}>Close</Button>
+      <Button color="primary" type="clear" on:click={clearEditing}>Close</Button
+      >
     </div>
-    <div class="main">{Lang.t('dashboard.widget-editor', 'Widget Editor')}</div>
+    <div class="main">{Lang.t("dashboard.widget-editor", "Widget Editor")}</div>
     <div class="right">
       <Button color="primary" type="clear" on:click={saveEditingWidget}>
         {#if editingWidget && editingWidget._editing}
-          {`${Lang.t('general.update', 'Update')}`}
-        {:else}{`${Lang.t('general.save', 'Save')}`}{/if}
+          {`${Lang.t("general.update", "Update")}`}
+        {:else}{`${Lang.t("general.save", "Save")}`}{/if}
       </Button>
     </div>
   </div>

@@ -178,6 +178,109 @@
     });
   }
 
+  function selectType2() {
+    const generateElementOption = (title, type, icon) => {
+      return {
+        title,
+        icon,
+        async click() {
+          let selected: any = await Interact.select(type);
+          if (selected.length) {
+            value.secElement1 = value.secElement1 || {
+              id: null,
+              type: null,
+              obj: null,
+            };
+            value.secElement1.obj = selected[0];
+            value.secElement1.type = type;
+            if (type == "tracker") {
+              value.secElement1.id = value.secElement1.obj.tag;
+            } else if (type == "person") {
+              value.secElement1.id = value.secElement1.obj.username;
+            } else if (type == "context") {
+              value.secElement1.id = selected[0];
+            } else {
+              console.error("Fit for other types", selected[0]);
+            }
+            value.secElement1 =
+              value.secElement1 instanceof TrackableElement
+                ? value.secElement1
+                : new TrackableElement(value.secElement1);
+            value.secStats1 = value.stats;    // ugly bypass of error that secStats1 is not defined. TODO RdL
+          }
+            
+        },
+      };
+    };
+    Interact.popmenu({
+      title: "What type of item would you like to add?",
+      buttons: [
+        generateElementOption("Tracker", "tracker", "tracker"),
+        generateElementOption("Person", "person", "userCircle"),
+        generateElementOption("Context", "context", "bulb"),
+      ],
+    });
+  }
+
+  function selectType3() {
+    const generateElementOption = (title, type, icon) => {
+      return {
+        title,
+        icon,
+        async click() {
+          let selected: any = await Interact.select(type);
+          if (selected.length) {
+            value.secElement2 = value.secElement2 || {
+              id: null,
+              type: null,
+              obj: null,
+            };
+            value.secElement2.obj = selected[0];
+            value.secElement2.type = type;
+            if (type == "tracker") {
+              value.secElement2.id = value.secElement2.obj.tag;
+            } else if (type == "person") {
+              value.secElement2.id = value.secElement2.obj.username;
+            } else if (type == "context") {
+              value.secElement2.id = selected[0];
+            } else {
+              console.error("Fit for other types", selected[0]);
+            }
+            value.secElement2 =
+              value.secElement2 instanceof TrackableElement
+                ? value.secElement2
+                : new TrackableElement(value.secElement2);
+            value.secStats2 = value.stats;     // ugly bypass of error that secStats2 is not defined. TODO RdL
+          }
+        },
+      };
+    };
+    Interact.popmenu({
+      title: "What type of item would you like to add?",
+      buttons: [
+        generateElementOption("Tracker", "tracker", "tracker"),
+        generateElementOption("Person", "person", "userCircle"),
+        generateElementOption("Context", "context", "bulb"),
+      ],
+    });
+  }
+
+  function deletesectracker1() {
+    console.log("delete 1");
+    value.secElement1 =
+      value.secElement1 instanceof TrackableElement
+        ? value.secElement2
+        : new TrackableElement(value.secElement2);
+    value.secStats1 = value.secStats2;
+    deletesectracker2();
+  }
+
+  function deletesectracker2() {
+    console.log("delete 2");
+    value.secElement2 = null;
+    value.secStats2 = value.stats;
+  }
+
   async function getConditionalValue() {
     let inputTracker;
     if (value.element.type == "tracker") {
@@ -260,6 +363,78 @@
               {/if}
             </div>
           </ListItem>
+          {#if widgetTypeId == "barchart" || widgetTypeId == "linechart" || widgetTypeId == "scatterchart"}
+            <ListItem
+              bg="transparent"
+              clickable
+              delay={0}
+              className="px-2 trackable-item"
+              title={`${!value.secElement1 ? "⚠️ " : ""} ${Lang.t(
+                "general.trackable-item",
+                "Trackable Item"
+              )}`}
+            >
+              <div slot="right">
+                {#if value.secElement1}
+                  <TrackerSmallBlock
+                    truncate
+                    xs
+                    element={value.secElement1}
+                    on:click={selectType2}
+                    className="px-2"
+                    style="background-color:var(--color-solid); min-height:40px; min-width:100px; max-width:150px;"
+                  />
+                {:else}
+                  <Text className="text-primary-bright" on:click={selectType2}
+                    >{Lang.t("general.select")}...</Text
+                  >
+                {/if}
+              </div>
+              <div slot="left">
+                <Button icon className="tap-icon" on:click={deletesectracker1}>
+                  <Icon name="delete" />
+                </Button>
+              </div>
+            </ListItem>
+            {#if value.secElement1}
+              <ListItem
+                bg="transparent"
+                clickable
+                delay={0}
+                className="px-2 trackable-item"
+                title={`${!value.secElement2 ? "⚠️ " : ""} ${Lang.t(
+                  "general.trackable-item",
+                  "Trackable Item"
+                )}`}
+              >
+                <div slot="right">
+                  {#if value.secElement2}
+                    <TrackerSmallBlock
+                      truncate
+                      xs
+                      element={value.secElement2}
+                      on:click={selectType3}
+                      className="px-2"
+                      style="background-color:var(--color-solid); min-height:40px; min-width:100px; max-width:150px;"
+                    />
+                  {:else}
+                    <Text className="text-primary-bright" on:click={selectType3}
+                      >{Lang.t("general.select")}...</Text
+                    >
+                  {/if}
+                </div>
+                <div slot="left">
+                  <Button
+                    icon
+                    className="tap-icon"
+                    on:click={deletesectracker2}
+                  >
+                    <Icon name="delete" />
+                  </Button>
+                </div>
+              </ListItem>
+            {/if}
+          {/if}
         {/if}
 
         {#if widgetTypeId == "text"}
@@ -298,9 +473,13 @@
             <option value="lg">Large</option>
           </Input>
         </ListItem>
-        {#if (widgetTypeId == "barchart") || (widgetTypeId == "linechart")}
+        {#if widgetTypeId == "barchart" || widgetTypeId == "linechart"}
           <ListItem bg="transparent" className="p-0">
-            <Input type="select" label="Statistics Options" bind:value={value.stats2}>
+            <Input
+              type="select"
+              label="Statistics Options"
+              bind:value={value.stats2}
+            >
               <option value="none">None</option>
               <option value="avg">Average</option>
               <option value="sma-7">Simple Moving Average (7)</option>
@@ -309,6 +488,10 @@
               <option value="ema-7">Exponential Moving Average (7)</option>
               <option value="ema-15">Exponential Moving Average (15)</option>
               <option value="ema-30">Exponential Moving Average (30)</option>
+              <option value="split-11">Split Average (1/2 vs 1/2)</option>
+              <option value="split-12">Split Average (1/3 vs 2/3)</option>
+              <option value="split-13">Split Average (1/4 vs 3/4)</option>
+              <option value="cumm">Cummulative over Time</option>
             </Input>
           </ListItem>
         {/if}

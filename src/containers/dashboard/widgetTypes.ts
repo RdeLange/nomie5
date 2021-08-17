@@ -26,6 +26,12 @@ export const widgetTypes: Array<IWidgetType> = [
     requires: ["timeframe", "element"],
     optional: [],
   },
+  {
+    label: "Scatter Chart",
+    id: "scatterchart",
+    requires: ["timeframe", "element"],
+    optional: [],
+  },
   // {
   //   label: "Streak",
   //   id: "streak",

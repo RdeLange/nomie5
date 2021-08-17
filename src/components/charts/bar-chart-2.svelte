@@ -8,15 +8,25 @@
   import { Interact } from "../../store/interact";
   import ignoreArrayZeros from "../../modules/stats/ignore-zeros";
   import _ from "lodash";
-  import statUtils from "./bar-chart-2-stat-utils"
+  import statUtils from "./bar-chart-2-stat-utils";
+  import additionalDatasets from "./bar-chart-2-additional-datasets";
 
+  export let math = "" ;
   export let labels = [];
+  export let labels2 = [];
+  export let labels3 = [];
   export let height = 200;
 
   export let mainlabel = "";
+  export let seclabel1 = "";
+  export let seclabel2 = "";
   export let title = "";
   export let color = "#4d84a1";
+  export let color2 = "#4d84a1";
+  export let color3 = "#4d84a1";
   export let points: any;
+  export let points2: any;
+  export let points3: any;
   export let activeIndex = 2;
   export let xFormat: Function = (x) => x;
   export let yFormat: Function = (y) => y;
@@ -26,6 +36,8 @@
   // export let beginAtZero: boolean = true;
   export let showSelected: boolean = true;
   export let ignoreZero: boolean = false;
+  export let ignoreZero2: boolean = false;
+  export let ignoreZero3: boolean = false;
   export let showstats: string = "none";
 
   // Generate a random ID for this Component
@@ -35,6 +47,8 @@
   let _canvas;
   let theChart;
   let lastPoints = [];
+  let lastPoints2 = [];
+  let lastPoints3 = [];
   let lastshowstats = showstats;
   
 
@@ -42,6 +56,16 @@
 
   $: if (points && theChart && points.map((p) => p.y).join() !== lastPoints) {
     lastPoints = points.map((p) => p.y).join();
+    loadData();
+  }
+
+  $: if (points2 && theChart && points2.map((p) => p.y).join() !== lastPoints2) {
+    lastPoints2 = points2.map((p) => p.y).join();
+    loadData();
+  }
+
+  $: if (points3 && theChart && points3.map((p) => p.y).join() !== lastPoints3) {
+    lastPoints3 = points3.map((p) => p.y).join();
     loadData();
   }
   
@@ -79,7 +103,8 @@
         maxBarThickness: 34,
         minBarLength: 2,
         label: mainlabel.charAt(0).toUpperCase() + mainlabel.slice(1),
-        order: 2,
+        order: 1,
+        yAxisID: 'Primairy',
       },
     ];
     let dataset = theChart.data.datasets[0].data;
@@ -89,13 +114,31 @@
     }
 
     theChart.data.datasets[0].data = dataset;
+    let datasetcount = 1;
+    
+
+    // if additional datasets are defined, include them as dataset
+    
+    if (points2) {
+      
+      let datasetMain = theChart.data.datasets[0];
+      theChart.data.datasets[datasetcount] = additionalDatasets.DefineChart(datasetMain,type,color2,seclabel1,points2,ignoreZero2,datasetcount+1); 
+      datasetcount = datasetcount+1;  
+    }
+    if (points3) {
+      
+      let datasetMain = theChart.data.datasets[0];
+      theChart.data.datasets[datasetcount] = additionalDatasets.DefineChart(datasetMain,type,color3,seclabel2,points3,ignoreZero3,datasetcount+1); 
+      datasetcount = datasetcount+1;  
+    }
+
     // if statistics are defined as property, include them as the second dataset
     if (showstats != 'none') {
+      if ((showstats == 'cumm' && math == "sum") || showstats != 'cumm')  {
       let datasetMain = theChart.data.datasets[0];
-      theChart.data.datasets[1] = statUtils.defineStatsDataset(datasetMain,showstats);
+      theChart.data.datasets[datasetcount] = statUtils.defineStatsDataset(datasetMain,showstats,datasetcount+1,math);
+      datasetcount = datasetcount+1;}  
     }
-    
-    
     theChart.update();
   }
 
@@ -107,7 +150,19 @@
      * if its not greater than zero - then  zero will be the min
      */
     const minPoint: number = _.min(points.map((p) => p.y));
+    const minPoint2: number = 0;
+    const minPoint3: number = 0; 
+    
+    if(points2){const minPoint2: number = _.min(points2.map((p) => p.y));}
+    if(points3){const minPoint3: number = _.min(points3.map((p) => p.y));}
+
     // Create chart config
+    let showsecticks1 = false;
+    let showsecticks2 = false;
+    
+    if (points2) {showsecticks1 = true}
+    if (points3) {showsecticks2 = true}
+
     const chartConfig = {
       type,
       options: {
@@ -147,7 +202,8 @@
         },
         scales: {
           yAxes: [
-            {
+            { id: "Primairy",
+            position: 'left',            
               ticks: {
                 min: minPoint > 0 ? minPoint - 1 : 0,
                 maxTicksLimit: 6,
@@ -161,6 +217,44 @@
                 fontSize: 9,
                 beginAtZero: false,
                 display: hideYTicks == false,
+              },
+            },
+            { id: "Secondairy1",
+            position: 'right',      
+            display: showsecticks1,      
+              ticks: {
+                min: minPoint2 > 0 ? minPoint2 - 1 : 0,
+                maxTicksLimit: 6,
+                callback(value, index, values) {
+                  if (yFormat) {
+                    return yFormat(value);
+                  } else {
+                    return value;
+                  }
+                },
+                fontSize: 9,
+                fontColor: color2,
+                beginAtZero: false,
+                
+              },
+            },
+            { id: "Secondairy2",
+            position: 'right',   
+            display: showsecticks2,         
+              ticks: {
+                min: minPoint3 > 0 ? minPoint3 - 1 : 0,
+                maxTicksLimit: 6,
+                callback(value, index, values) {
+                  if (yFormat) {
+                    return yFormat(value);
+                  } else {
+                    return value;
+                  }
+                },
+                fontSize: 9,
+                fontColor: color3,
+                beginAtZero: false,
+                
               },
             },
           ],
