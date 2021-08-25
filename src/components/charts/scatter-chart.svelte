@@ -10,8 +10,8 @@
   import _ from "lodash";
   import statUtils from "./bar-chart-2-stat-utils";
   import additionalDatasets from "./bar-chart-2-additional-datasets";
+import { element } from "svelte/internal";
 
-  export let math = "" ;
   export let labels = [];
   export let labels2 = [];
   export let labels3 = [];
@@ -50,95 +50,101 @@
   let lastPoints2 = [];
   let lastPoints3 = [];
   let lastshowstats = showstats;
-  
 
   export let selected = undefined;
 
-  $: if (points && theChart && points.map((p) => p.y).join() !== lastPoints) {
-    lastPoints = points.map((p) => p.y).join();
-    loadData();
-  }
-
-  $: if (points2 && theChart && points2.map((p) => p.y).join() !== lastPoints2) {
-    lastPoints2 = points2.map((p) => p.y).join();
-    loadData();
-  }
-
-  $: if (points3 && theChart && points3.map((p) => p.y).join() !== lastPoints3) {
-    lastPoints3 = points3.map((p) => p.y).join();
-    loadData();
-  }
-  
-  // make sure the chart updates when other statistic view is selected in widget editor
-  $: if (showstats !== lastshowstats) {
-    lastshowstats = showstats;
-    loadData();
-  }
-
-  $: if ($Interact.stats.focused && points) {
-    selected = points.find((p) => {
-      return (
-        p.date.format("YYYY-MM-DD") ===
-        $Interact.stats.focused.date.format("YYYY-MM-DD")
-      );
+  var jitter = function (data) {
+    return data.map(function (e) {
+      var xJitter = Math.random() * (-1 - 1) + 1;
+      var yJitter = Math.random() * (-1 - 1) + 1;
+      return {
+        x: e.x + xJitter,
+        y: e.y + yJitter,
+      };
     });
-  } else if (points && points.length) {
-    selected = undefined;
+  };
+
+  $: if ((points && theChart && points.map((p) => p.y).join() !== lastPoints) || (points2 && theChart && points2.map((p) => p.y).join() !== lastPoints2) || (points3 && theChart && points3.map((p) => p.y).join() !== lastPoints3)) {
+    if (points) {lastPoints = points.map((p) => p.y).join()};
+    if (points2) {lastPoints2 = points2.map((p) => p.y).join()};
+    if (points3) {lastPoints3 = points3.map((p) => p.y).join()};
+    loadData();
+  }
+
+  
+
+  function combinedata(primairydata, secondairydata) {
+    const length = primairydata.length;
+    let index = 0;
+    const combineddata = [];
+
+    while (++index < length) {
+      combineddata.push({ x: primairydata[index], y: secondairydata[index] });
+    }
+    return combineddata;
   }
 
   function loadData() {
-    const lineStyle = {
-      backgroundColor: "transparent",
-      borderColor: color,
-    };
-    const barStyle = {
-      backgroundColor: color,
-    };
-
-    theChart.data.labels = labels || points.map((row) => row.x);
-    theChart.data.datasets = [
-      {
-        ...(type == "line" ? lineStyle : barStyle),
-        data: points.map((row) => row.y),
-        maxBarThickness: 34,
-        minBarLength: 2,
+    let secondairydata;
+    let primairydata ;
+    let data;
+    if (!points2 && !points3) {
+      primairydata = points.map((row) => row.y);
+      secondairydata = points.map((row) => row.y);
+      if (ignoreZero) {
+        primairydata = ignoreArrayZeros(primairydata);
+      }
+      if (ignoreZero) {
+        secondairydata = ignoreArrayZeros(secondairydata);
+      }
+      data = combinedata(primairydata, secondairydata);
+      
+      theChart.data.datasets[0] = {
         label: mainlabel.charAt(0).toUpperCase() + mainlabel.slice(1),
-        order: 1,
-        yAxisID: 'Primairy',
-      },
-    ];
-    let dataset = theChart.data.datasets[0].data;
-
-    if (ignoreZero) {
-      dataset = ignoreArrayZeros(dataset);
+        borderColor: color,
+        data: jitter(data),
+        yAxisID: "First",
+      };
     }
 
-    theChart.data.datasets[0].data = dataset;
-    let datasetcount = 1;
-    
-
-    // if additional datasets are defined, include them as dataset
-    
     if (points2) {
+      primairydata = points.map((row) => row.y);
+      secondairydata = points2.map((row) => row.y);
+      if (ignoreZero) {
+        primairydata = ignoreArrayZeros(primairydata);
+      }
+      if (ignoreZero2) {
+        secondairydata = ignoreArrayZeros(secondairydata);
+      }
+      data = combinedata(primairydata, secondairydata);
       
-      let datasetMain = theChart.data.datasets[0];
-      theChart.data.datasets[datasetcount] = additionalDatasets.DefineChart(datasetMain,type,color2,seclabel1,points2,ignoreZero2,datasetcount+1); 
-      datasetcount = datasetcount+1;  
-    }
-    if (points3) {
-      
-      let datasetMain = theChart.data.datasets[0];
-      theChart.data.datasets[datasetcount] = additionalDatasets.DefineChart(datasetMain,type,color3,seclabel2,points3,ignoreZero3,datasetcount+1); 
-      datasetcount = datasetcount+1;  
+      theChart.data.datasets[0] = {
+        label: seclabel1.charAt(0).toUpperCase() + seclabel1.slice(1),
+        borderColor: color2,
+        data: jitter(data),
+        yAxisID: "First",
+      };
     }
 
-    // if statistics are defined as property, include them as the second dataset
-    if (showstats != 'none') {
-      if ((showstats == 'cumm' && math == "sum") || showstats != 'cumm')  {
-      let datasetMain = theChart.data.datasets[0];
-      theChart.data.datasets[datasetcount] = statUtils.defineStatsDataset(datasetMain,showstats,datasetcount+1,math);
-      datasetcount = datasetcount+1;}  
+    if (points3) {
+      primairydata = points.map((row) => row.y);
+      secondairydata = points3.map((row) => row.y);
+      if (ignoreZero) {
+        primairydata = ignoreArrayZeros(primairydata);
+      }
+      if (ignoreZero3) {
+        secondairydata = ignoreArrayZeros(secondairydata);
+      }
+      data = combinedata(primairydata, secondairydata);
+     
+      theChart.data.datasets[1] = {
+        label: seclabel2.charAt(0).toUpperCase() + seclabel2.slice(1),
+        borderColor: color3,
+        data: jitter(data),
+        yAxisID: "Second",
+      };
     }
+
     theChart.update();
   }
 
@@ -151,131 +157,92 @@
      */
     const minPoint: number = _.min(points.map((p) => p.y));
     const minPoint2: number = 0;
-    const minPoint3: number = 0; 
-    
-    if(points2){const minPoint2: number = _.min(points2.map((p) => p.y));}
-    if(points3){const minPoint3: number = _.min(points3.map((p) => p.y));}
+    const minPoint3: number = 0;
+
+    if (points2) {
+      const minPoint2: number = _.min(points2.map((p) => p.y));
+    }
+    if (points3) {
+      const minPoint3: number = _.min(points3.map((p) => p.y));
+    }
 
     // Create chart config
     let showsecticks1 = false;
     let showsecticks2 = false;
-    
-    if (points2) {showsecticks1 = true}
-    if (points3) {showsecticks2 = true}
+
+    if (points2) {
+      showsecticks1 = true;
+    }
+    if (points3) {
+      showsecticks2 = true;
+    }
 
     const chartConfig = {
-      type,
+      type: "scatter",
       options: {
-        animation: {
-          duration: 0, // general animation time
+        maintainAspectRatio: false,
+        title: {
+          display: false,
+          text: "Original Data",
         },
-
-        tooltips: {
-          mode: "point",
-          callbacks: {
-            label: function (tooltipItem, data) {
-              return yFormat ? yFormat(tooltipItem.value) : tooltipItem.value;
-            },
-          },
-        },
-
-        defaultColor: color,
-        responsive: true,
         defaultFontSize: 10,
         legend: {
           display: true,
           position: "right",
           labels: {
-            filter(legendItem, data) {
-              return legendItem.text;
-            },
             boxWidth: 5,
             boxHeight: 2,
             usePointStyle: true,
             pointStyle: "circle",
           },
         },
-        maintainAspectRatio: false,
-        title: {
-          display: title,
-          text: title,
-        },
+        showLines: true,
         scales: {
           yAxes: [
-            { id: "Primairy",
-            position: 'left',            
+            {
+              id: "First",
+              position: "left",
               ticks: {
-                min: minPoint > 0 ? minPoint - 1 : 0,
+                min: minPoint2 > 0 ? minPoint2 - 1 : 0,
                 maxTicksLimit: 6,
-                callback(value, index, values) {
-                  if (yFormat) {
-                    return yFormat(value);
-                  } else {
-                    return value;
-                  }
-                },
                 fontSize: 9,
+                fontColor: color2,
                 beginAtZero: false,
                 display: hideYTicks == false,
               },
             },
-            { id: "Secondairy1",
-            position: 'right',      
-            display: showsecticks1,      
-              ticks: {
-                min: minPoint2 > 0 ? minPoint2 - 1 : 0,
-                maxTicksLimit: 6,
-                callback(value, index, values) {
-                  if (yFormat) {
-                    return yFormat(value);
-                  } else {
-                    return value;
-                  }
-                },
-                fontSize: 9,
-                fontColor: color2,
-                beginAtZero: false,
-                
-              },
-            },
-            { id: "Secondairy2",
-            position: 'right',   
-            display: showsecticks2,         
+            {
+              id: "Second",
+              position: "right",
+              display: showsecticks2,
               ticks: {
                 min: minPoint3 > 0 ? minPoint3 - 1 : 0,
                 maxTicksLimit: 6,
-                callback(value, index, values) {
-                  if (yFormat) {
-                    return yFormat(value);
-                  } else {
-                    return value;
-                  }
-                },
                 fontSize: 9,
                 fontColor: color3,
                 beginAtZero: false,
-                
+                display: hideYTicks == false,
               },
             },
           ],
           xAxes: [
             {
-              gridLines: {
-                display: false,
-              },
               ticks: {
-                callback(value, index, values) {
-                  if (xFormat) {
-                    return xFormat(value);
-                  } else {
-                    return value;
-                  }
-                },
-                display: hideXTicks == false,
+                min: minPoint > 0 ? minPoint - 1 : 0,
                 fontSize: 9,
+                beginAtZero: false,
+                display: hideXTicks == false,
               },
             },
           ],
+        },
+        elements: {
+          point: {
+            radius: 3,
+            borderWidth: 2,
+            hoverRadius: 5,
+            hoverBorderWidth: 3,
+          },
         },
       },
     };

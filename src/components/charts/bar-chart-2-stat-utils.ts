@@ -131,7 +131,7 @@ export default {
                 fill: false,
                 borderColor: "rgb(75, 192, 192)",
                 pointRadius: 1,
-                label: "Simple Moving Average (" + window + ")",
+                label: "SMA (" + window + ")",
                 order: chartorder,
                 yAxisID: "Primairy",
             };
@@ -144,7 +144,7 @@ export default {
                 fill: false,
                 borderColor: "pink",
                 pointRadius: 1,
-                label: "Exponential Moving Average (" + window + ")",
+                label: "EMA (" + window + ")",
                 order: chartorder,
                 yAxisID: "Primairy",
             };
@@ -161,7 +161,7 @@ export default {
                 tension: 0,
                 spanGaps: false,
                 pointRadius: 1,
-                label: "Split Average (" + split + ")",
+                label: "Split Avg (" + split + ")",
                 order: chartorder,
                 yAxisID: "Primairy",
             };
@@ -175,7 +175,7 @@ export default {
                 borderColor: "orange",
                 backgroundColor: "amber",
                 pointRadius: 1,
-                label: "Cummulative Sum",
+                label: "Cumm Σ",
                 order: chartorder,
                 yAxisID: "Primairy",
             };
