@@ -253,10 +253,10 @@
           >
             {#if activePeriod.icon}
             <Dymoji period={activePeriod} size={50} radius={0.3} color={activePeriod.periodcolor}/>
-            &nbsp; {activePeriod.getDisplayName()}
+            
             {:else}
             <Dymoji period={activePeriod} size={50} radius={0.3} color={activePeriod.periodcolor}/>
-            &nbsp; {activePeriod.getDisplayName()}
+           
             {/if}
           </div>
 
