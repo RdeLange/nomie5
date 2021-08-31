@@ -38,7 +38,7 @@
   function fireChange(evt: any) {
     date = new Date(evt.target.value);
     time = date.getTime();
-    dispatch("change", dayjs(new Date(localDate)));
+    dispatch("change", dayjs(new Date(date)));
   }
 </script>
 
