@@ -102,6 +102,19 @@
         }} />
     </div>
   </ListItem>
+  <ListItem
+    className="py-2"
+    title={Lang.t('settings.feature-periods-tracking', 'Periods Tracking')}
+    description={Lang.t('settings.feature-periods-description', 'Keep track of specific periods during your life')}>
+    <div slot="right" class="pl-2">
+      <ToggleSwitch
+        value={$FeatureStore.periods}
+        on:change={(change) => {
+          FeatureStore.toggle('periods', change.detail);
+        }} />
+    </div>
+  </ListItem>
+  <hr class="divider center" />
   <hr class="divider center" />
   <ListItem
     title={Lang.t('settings.use-location', 'Track Location')}

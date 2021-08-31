@@ -1,6 +1,7 @@
 <script>
   import { TrackerStore } from "../../store/tracker-store";
   import { PeopleStore } from "../../store/people-store";
+  import { PeriodsStore } from "../../store/periods-store";
   import { ContextStore } from "../../store/context-store";
   import Dymoji from "../../components/dymoji/dymoji.svelte";
   import tick from "../../utils/tick/tick";
@@ -31,7 +32,7 @@
 
   /**
    * Auto Complete Search
-   * Searches trackers, people and context
+   * Searches trackers, people, periods and context
    * THIS IS A MESS
    *
    **/
@@ -63,6 +64,21 @@
             })
           : null;
 
+        // Search for Periods
+      } else if (type === "period") {
+        let periods = Object.keys($PeriodsStore.periods).filter((period) => {
+          return period.search(searchTag.toLowerCase()) > -1;
+        });
+        return periods.length
+          ? periods.map((periodname) => {
+              return {
+                tag: periodname,
+                emoji: "⏳",
+                type: "period",
+              };
+            })
+          : null;    
+
         // Search for Context
       } else if (type === "context") {
         let context = $ContextStore.filter((term) => {
@@ -85,6 +101,9 @@
     if (tracker.type === "person") {
       note = `@${tracker.tag} `;
       partialTag = `@${state.partialTag}`;
+    } else if (tracker.type === "period") {
+      note = `~${tracker.tag} `;
+      partialTag = `~${state.partialTag}`;
     } else if (tracker.type === "context") {
       note = `+${tracker.tag} `;
       partialTag = `${state.partialTag}`;
@@ -121,6 +140,10 @@
       } else if (tag.charAt(0) === "@" && tag.length > 1) {
         state.partialTag = tag.replace(/\@/gi, "");
         state.results = autoCompleteSearch(state.partialTag, "person");
+        // If its a period
+      } else if (tag.charAt(0) === "~" && tag.length > 1) {
+        state.partialTag = tag.replace(/\~/gi, "");
+        state.results = autoCompleteSearch(state.partialTag, "period");
         // If it's context
       } else if (tag.charAt(0) === "+" && tag.length > 1) {
         state.partialTag = tag;
@@ -223,12 +246,20 @@
             src={$PeopleStore.people[tracker.tag].avatar}
             className="mr-2"
             size={16} />
+        {:else if tracker.type == 'period'}
+          <Avatar
+            label={$PeriodsStore.periods[tracker.tag].periodname}
+            src={$PeriodsStore.periods[tracker.tag].icon}
+            className="mr-2"
+            size={16} />    
         {:else}
           <Avatar emoji={tracker.emoji} className="mr-2" size={16} />
         {/if}
         <div style="max-width:120px;" class="ml-1 truncate">
           {#if tracker.type == 'person'}
             {$PeopleStore.people[tracker.tag].displayName}
+          {:else if tracker.type == 'period'}  
+            {$PeriodsStore.periods[tracker.tag].displayName}
           {:else if tracker.type == 'context'}
             {tracker.tag}
           {:else}{tracker.label}{/if}

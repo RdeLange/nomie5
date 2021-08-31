@@ -118,6 +118,7 @@ export interface WidgetConfig {
   secElement2?: ITrackableElement;
   secStats1?: any;
   secStats2?: any;
+  showperiods?:boolean;
 }
 
 export class Widget {
@@ -145,6 +146,7 @@ export class Widget {
   public secElement2?: TrackableElement;
   public secStats1?: any;
   public secStats2?: any;
+  public showperiods?: boolean = false;
 
   constructor(payload?: WidgetConfig) {
     payload = payload || {};
@@ -163,6 +165,7 @@ export class Widget {
     this.compareUnderColor = payload.compareUnderColor;
     // Including Avg
     this.includeAvg = payload.includeAvg ? true : false;
+    this.showperiods = payload.showperiods ? true : false;
     // If a timeRange
     if (payload.timeRange) {
       this.timeRange = new WidgetTimeFrame(payload.timeRange);

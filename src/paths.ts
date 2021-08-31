@@ -17,6 +17,9 @@ const NPaths = {
     people() {
       return `/people`;
     },
+    periods() {
+      return `/periods`;
+    },
     settings() {
       return "/settings";
     },

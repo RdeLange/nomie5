@@ -39,7 +39,7 @@
       let parsed = extractor.parse(str, { includeGeneric: true });
       let matches = parsed.filter((trackableElement) => {
         return (
-          ("person", "context", "generic").indexOf(trackableElement.type) > -1
+          ("person","period", "context", "generic").indexOf(trackableElement.type) > -1
         );
       });
       actual = matches.length;
@@ -74,6 +74,7 @@
     // .string,
     .tracker,
     .person,
+    .period,
     .context {
       padding-right: 3px;
       flex-shrink: 0;
@@ -110,6 +111,14 @@
           }}>
           {` ${word.raw} `}
         </span>
+      {:else if word.type == 'period'}
+        <span
+          class="person font-weight-bold clickable text-primary-bright"
+          on:click={() => {
+            methods.textElementClick(word);
+          }}>
+          {` ${word.raw} `}
+        </span>  
       {:else if word.type == 'context'}
         <span
           class="context font-weight-bold clickable text-primary-bright"

@@ -125,6 +125,10 @@ const interactInit = () => {
     people: {
       active: null,
     },
+    periods: {
+      active: null,
+      initialview: "check-in",
+    },
     trackerSelector: {
       show: false,
       multiple: false,
@@ -389,6 +393,13 @@ const interactInit = () => {
         return d;
       });
     },
+    period(periodname,initialview) {
+      update((d) => {
+        d.periods.active = periodname;
+        d.periods.initialview = initialview;
+        return d;
+      });
+    },
     closeStats() {
       update((d) => {
         d.stats.terms = [];
@@ -423,7 +434,7 @@ const interactInit = () => {
         }
       }
       // timer.done();
-      return note;
+      return note; 
     },
 
     elementOptions(element: TrackableElement, options?: { callback?: Function; log?: NLog }) {
@@ -444,13 +455,14 @@ const interactInit = () => {
     getElementOptionButons(element: TrackableElement, options?: { callback?: Function; log?: NLog }) {
       options = options || {};
       let trackableElement = element instanceof TrackableElement ? element : new TrackableElement(element);
-      let tracker = trackableElement.type == "tracker" ? TrackerStore.getByTag(trackableElement.id) : null;
+      let tracker = trackableElement.type == "tracker" ? TrackerStore.getByTag(trackableElement.id) : null; 
       let date = undefined;
       if (options.log) {
         date = dayjs(options.log.end);
       }
-      const buttons = [
-        {
+      const buttons = [];
+      if (trackableElement.type != "period") {
+        buttons.push({  
           title: `${Lang.t("stats.view-stats", "View Stats")}`,
           icon: "chart2",
           divider: false,
@@ -465,15 +477,20 @@ const interactInit = () => {
               options.callback();
             }
           },
-        },
-        {
+        })
+      }
+
+      if (trackableElement.type != "period") {
+        buttons.push({
           title: Lang.t("stats.streak", "Streak"),
           icon: "calendar",
           click: () => {
             Interact.openStreak(trackableElement.prefix + trackableElement.id);
           },
-        },
-        {
+        })
+      }
+
+      buttons.push({
           icon: "search",
           title: `${Lang.t("general.search", "Search")} "${tracker && tracker.label ? tracker.label : trackableElement.id}"`,
           click: async () => {
@@ -481,8 +498,8 @@ const interactInit = () => {
             await tick(200);
             SearchStore.search(trackableElement.prefix + trackableElement.id, "history");
           },
-        },
-      ];
+        })
+      
       if (trackableElement.type == "tracker") {
         buttons.push({
           icon: "edit",
@@ -505,8 +522,32 @@ const interactInit = () => {
             }
           },
         });
-      }
-
+      } else if (trackableElement.type == "period") {
+        buttons.push({
+          icon: "eye",
+          divider: true,
+          title: `${Lang.t("periods.log-observation")}`,
+          click: () => {
+            Interact.closeOnThisDay();
+            Interact.period(trackableElement.id,"observations");
+            if (options.callback) {
+              options.callback();
+            }
+          },
+        });
+        buttons.push({
+          icon: "edit",
+          divider: false,
+          title: `${Lang.t("periods.edit")}`,
+          click: () => {
+            Interact.closeOnThisDay();
+            Interact.period(trackableElement.id, "edit");
+            if (options.callback) {
+              options.callback();
+            }
+          },
+        });
+      } 
       return buttons;
     },
 

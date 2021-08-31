@@ -121,6 +121,12 @@ const DashboardStoreInit = (): any => {
         await methods.save();
       }
 
+      async function toggleShowPeriods() {
+        if (widget.showperiods){widget.showperiods = false}
+        else {widget.showperiods = true}
+        await methods.save();
+      }
+
       let buttons = [
         {
           title: `${Lang.t("dashboard.edit-widget", "Edit Widget")}...`,
@@ -149,6 +155,14 @@ const DashboardStoreInit = (): any => {
           icon: widget.size == "lg" ? "checkmarkOutline" : undefined,
           click() {
             setWidgetSize("lg");
+          },
+        },
+        {
+          divider: true,
+          title: `${Lang.t("dashboard.show-periods-toggle", "Toggle Show Periods")}`,
+          icon: widget.showperiods ? "eyeOff" : "eye",
+          click() {
+            toggleShowPeriods();
           },
         },
         {

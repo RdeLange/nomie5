@@ -12,6 +12,7 @@
   import Interactions from "./containers/interactions/interactions.svelte";
   import LibraryModal from "./containers/library/library.svelte";
   import PersonModal from "./containers/people/person-modal.svelte";
+  import PeriodModal from "./containers/periods/period-modal.svelte";
   // import Modal from "./components/modal/modal.svelte";
   import StatsModal from "./containers/stats/stats-modal.svelte";
   import StreakModal from "./containers/steak/streak-modal.svelte";
@@ -33,7 +34,7 @@
   import { TrackerStore } from "./store/tracker-store"; // tracker state and methods
   import { TrackerLibrary } from "./store/tracker-library";
   import { CommanderStore } from "./store/commander"; // commander - /?note=hi&lat=35&lng=-81.32
-
+  import { PeriodsStore } from "./store/periods-store"; // Store for holding Periods
   import { PeopleStore } from "./store/people-store"; // Store for holding People
   import { ContextStore } from "./store/context-store"; // Store for holding Post Context (categories)
   import { DashboardStore } from "./store/dashboard-store"; // Store for holding Post Context (categories)
@@ -165,6 +166,7 @@
     // Set the user if they're logged in
     ready = true;
     PeopleStore.init(); // Initialize the People Store
+    PeriodsStore.init(); // Initialize the Periods Store
     Locations.init(); // Initialize Location Store
     ContextStore.init(); // check if this is a new version
     DashboardStore.init(); // Initilize Dashboards
@@ -215,6 +217,10 @@
 {/if}
 {#if ready && $Interact.people.active}
   <PersonModal />
+{/if}
+{#if ready && $Interact.periods.active}
+  <PeriodModal 
+  initialview = {$Interact.periods.initialview}/>
 {/if}
 {#if $Interact.blocker.show}
   <div id="ui-blocker" class="full-screen bg-translucent n-panel center-all">

@@ -41,6 +41,7 @@
     lastActivePersonKey = $Interact.people.active;
     domVisible = true;
     activePerson = new Person($PeopleStore.people[$Interact.people.active]);
+    
   }
 
   const state = {

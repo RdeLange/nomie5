@@ -42,11 +42,13 @@ export function strToColor(str) {
 }
 
 export default class Face {
-  constructor(id, config = {}) {
+  constructor(id, config = {},color) {
     this.id = id;
     this.config = new Config(config);
     this.hash = new Hash(id);
-    this.color = this.hash.pick(this.config.colors) || "red";
+    if (color == "#ffffff") {
+    this.color = this.hash.pick(this.config.colors) || "red";}
+    else {this.color = color}
     this.base = ``;
     this.assets = {};
   }

@@ -41,6 +41,7 @@
     logs: { running: false, done: false, progress: 0 },
     trackers: { running: false, done: false },
     people: { running: false, done: false },
+    periods: { running: false, done: false },
     dashboards: { running: false, done: false },
     context: { running: false, done: false },
     all: { running: false, done: false },
@@ -141,6 +142,16 @@
         "people",
         async () => {
           return await importLoader.importPeople();
+        },
+        confirmation
+      );
+    },
+
+    async importPeriods(confirmation: boolean = false) {
+      return await methods.run(
+        "periods",
+        async () => {
+          return await importLoader.importPeriods();
         },
         confirmation
       );
@@ -396,7 +407,24 @@
         </ListItem>
       {/if}
 
-      <!-- People -->
+      <!-- Periods -->
+      {#if (Object.keys(importLoader.normalized.periods) || []).length > 0}
+        <ImporterItem
+          emoji="⏳"
+          title={Lang.t('general.periods', 'Periods')}
+          count={(Object.keys(importLoader.normalized.periods) || []).length}
+          bind:status={importing.periods}
+          on:import={() => {
+            methods.importPeriods(true);
+          }} />
+      {:else}
+        <ListItem title={Lang.t('general.periods', 'Periods')}>
+          <div slot="left">⏳</div>
+          <div slot="right">0</div>
+        </ListItem>
+      {/if}
+
+      <!-- Context -->
       {#if (importLoader.normalized.context || []).length > 0}
         <ImporterItem
           emoji="💭"

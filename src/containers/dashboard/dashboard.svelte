@@ -249,7 +249,7 @@
     ];
 
     Interact.popmenu({
-      title: `${Lang.t("dashboard.options", "Dashboard Options")}`,
+      title: `${Lang.t("dashboard.options", "Dashboard Options")}`, 
       buttons,
     });
   }

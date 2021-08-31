@@ -9,6 +9,7 @@
   import HistoryRoute from "./history.svelte";
   import NomieAPIRoute from "./nomie-api.svelte";
   import PeopleRoute from "./people.svelte";
+  import PeriodsRoute from "./periods.svelte";
   import SettingsRoute from "./settings.svelte";
   import Setup from "./setup.svelte";
   import TrackRoute from "./track.svelte";
@@ -27,6 +28,7 @@
   <Route path="/history" component={HistoryRoute} />
   <Route path="/history/:date" component={HistoryRoute} />
   <Route path="/people" component={PeopleRoute} />
+  <Route path="/periods" component={PeriodsRoute} />
   <Route path="/settings" component={SettingsRoute} />
   <Route path="/settings/export" component={ExportRoute} />
   <Route path="/settings/export/:type" component={ExportRoute} />

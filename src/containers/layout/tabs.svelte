@@ -84,7 +84,10 @@ import { ApiStore } from "../api/api-store";
       {#if $FeatureStore.people}
         <AppTab link={NPaths.routes.people()} icon="user" label={Lang.t('tabs.people', 'People')} />
       {/if}
-      <AppTab link={NPaths.routes.settings()} notify={$ApiStore.items.length ? true : false} icon="settings" label={Lang.t('tabs.settings', 'Settings')} />
+      {#if $FeatureStore.periods}
+        <AppTab link={NPaths.routes.periods()} icon="eye" label={Lang.t('tabs.periods', 'Periods')} />
+      {/if}
+        <AppTab link={NPaths.routes.settings()} notify={$ApiStore.items.length ? true : false} icon="settings" label={Lang.t('tabs.settings', 'Settings')} />
 
     </div>
   </nav>

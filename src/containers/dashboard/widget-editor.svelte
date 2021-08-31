@@ -206,9 +206,8 @@
               value.secElement1 instanceof TrackableElement
                 ? value.secElement1
                 : new TrackableElement(value.secElement1);
-            value.secStats1 = value.stats;    // ugly bypass of error that secStats1 is not defined. TODO RdL
+            value.secStats1 = value.stats; // ugly bypass of error that secStats1 is not defined. TODO RdL
           }
-            
         },
       };
     };
@@ -250,7 +249,7 @@
               value.secElement2 instanceof TrackableElement
                 ? value.secElement2
                 : new TrackableElement(value.secElement2);
-            value.secStats2 = value.stats;     // ugly bypass of error that secStats2 is not defined. TODO RdL
+            value.secStats2 = value.stats; // ugly bypass of error that secStats2 is not defined. TODO RdL
           }
         },
       };
@@ -493,6 +492,11 @@
               <option value="split-13">Split Average (1/4 vs 3/4)</option>
               <option value="cumm">Cummulative over Time</option>
             </Input>
+          </ListItem>
+          <ListItem bg="transparent" title="Show Periods" className="p-0">
+            <div slot="right">
+              <ToggleSwitch bind:value={value.showperiods} />
+            </div>
           </ListItem>
         {/if}
 

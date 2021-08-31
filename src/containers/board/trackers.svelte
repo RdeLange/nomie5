@@ -129,7 +129,7 @@
     <ListItem
       id="tracker-{tracker.tag}"
       clickable
-      style="--tracker-color:{tracker.color}"
+      style="--tracker-color:{tracker.color}" 
       className="tracker-board-button tracker-{tracker.tag} py-2 tracker-list-item flex-shrink-off {is.truthy(getTodaysValue(tracker)) ? 'has-value' : 'no-value'}"
       compact={$UserStore.localSettings.compactButtons}
       on:longtap={(evt) => {
@@ -159,7 +159,7 @@
         {#if !hideMore}
           <Button
             shape="circle"
-            color="light"
+            color="light" 
             style="z-index:1000"
             on:click={(evt) => {
               dispatch('more', tracker);

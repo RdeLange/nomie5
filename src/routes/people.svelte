@@ -23,7 +23,7 @@
     view: "time",
     stats: {},
     searchTerm: null,
-    initialized: false,
+    initialized: false, 
   };
 
   const personClicked = (username) => {

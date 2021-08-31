@@ -1,4 +1,4 @@
-import type { INormalizedImport, ITrackers, IPeople } from "./import";
+import type { INormalizedImport, ITrackers, IPeople, IPeriods } from "./import";
 import TrackerConfig from "../tracker/tracker";
 import Board from "../board/board";
 import type { IBoard } from "../board/board";
@@ -6,6 +6,8 @@ import NLog from "../nomie-log/nomie-log";
 
 import { Dashboard } from "../dashboard/dashboard";
 import Person from "../person/person";
+import Period from "../period/period";
+
 import Location from "../locate/Location";
 
 function getTrackers(fileData: any): ITrackers {
@@ -22,6 +24,14 @@ function getPeople(fileData: any): IPeople {
     people[personId] = new Person(fileData.people[personId]);
   });
   return people;
+}
+
+function getPeriods(fileData: any): IPeriods {
+  let periods: IPeriods = {};
+  Object.keys(fileData.periods || {}).forEach((periodId) => {
+    periods[periodId] = new Period(fileData.periods[periodId]);
+  });
+  return periods;
 }
 
 function getBoards(fileData: any): Array<IBoard> {
@@ -55,6 +65,7 @@ export function N5ImportNormalizer(importer: any): INormalizedImport {
     boards: getBoards(importer),
     logs: getLogs(importer),
     people: getPeople(importer),
+    periods: getPeriods(importer),
     context: importer.context || [],
     locations: (importer.locations || []).map((loc) => {
       return new Location(loc);

@@ -3,6 +3,7 @@ import type { IBackupItems } from "../export/export";
 
 import { ContextStore } from "../../store/context-store";
 import { PeopleStore } from "../../store/people-store";
+import { PeriodsStore } from "../../store/periods-store";
 import { LedgerStore } from "../../store/ledger";
 import { TrackerStore } from "../../store/tracker-store";
 import { BoardStore } from "../../store/boards";
@@ -15,10 +16,10 @@ import type { INormalizedImport } from "./import";
 
 import type NLog from "../nomie-log/nomie-log";
 
-type IImportTypes = "dashboards" | "locations" | "people" | "trackers" | "logs" | "context";
+type IImportTypes = "dashboards" | "locations" | "people" | "periods" | "trackers" | "logs" | "context";
 export interface IImportStatus {
   importing: IImportTypes;
-  progress?: number;
+  progress?: number; 
 }
 
 export default class ImportLoader {
@@ -62,6 +63,8 @@ export default class ImportLoader {
       await this.importDashboards();
       func({ importing: "people" });
       await this.importPeople();
+      func({ importing: "periods" });
+      await this.importPeriods();
       func({ importing: "context" });
       await this.importContext();
       func({ importing: "locations" });
@@ -127,6 +130,16 @@ export default class ImportLoader {
       ...people,
     });
     return people;
+  }
+
+  public async importPeriods() {
+    let periods = await PeriodsStore.getPeriods();
+    periods = periods || {};
+    await PeriodsStore.write({
+      ...(this.normalized || { periods: {} }).periods,
+      ...periods,
+    });
+    return periods;
   }
 
   public async importContext() {

@@ -48,6 +48,9 @@ function generateRaw(str = "", type = "generic") {
     case "person":
       return `@${str}`;
       break;
+    case "period":
+      return `~${str}`;
+      break;  
     case "context":
       return `+${str}`;
       break;
@@ -64,6 +67,11 @@ export default {
   people(str) {
     return parse(str).filter((trackableElement) => {
       return trackableElement.type == "person";
+    });
+  },
+  periods(str) {
+    return parse(str).filter((trackableElement) => {
+      return trackableElement.type == "period";
     });
   },
   trackers(str) {

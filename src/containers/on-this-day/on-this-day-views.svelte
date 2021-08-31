@@ -101,7 +101,7 @@
       {#each people as person}
         <ShortcutUserButton
           {person}
-          on:click={() => {
+          on:click={() => { 
             Interact.elementOptions(new TrackableElement({ id: person.username, raw: `@${person.username}`, type: 'person' }));
           }}
           on:more={() => {

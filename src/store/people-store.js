@@ -84,7 +84,7 @@ const searchForPeople = async () => {
  * March 8 2020 - the Coronavirus COVID-19 is getting crazy.
  */
 
-const PeopleInit = () => {
+const PeopleInit = () => { 
   const PeopleState = {
     people: {},
     stats: {},

@@ -33,6 +33,7 @@ import config from "../config/appConfig";
 import { Interact } from "./interact";
 import { LastUsed } from "./last-used";
 import { PeopleStore } from "./people-store";
+import { PeriodsStore } from "./periods-store";
 import { ContextStore } from "./context-store";
 import { OfflineQueue } from "./offline-queue-store";
 import { ActiveLogStore } from "./active-log";
@@ -427,6 +428,14 @@ const ledgerInit = () => {
               };
             })
           );
+          PeriodsStore.saveFoundPeriods(
+            meta.periods.map((periodsElement) => {
+              return {
+                periodname: periodsElement.id,
+                last: log.end,
+              };
+            })
+          );
           // Save any new Context to the Context Store
           ContextStore.save(meta.context);
         }, 1);
@@ -531,6 +540,13 @@ const ledgerInit = () => {
 
     async queryPerson(username, start, end) {
       let logs = await methods.query({ start, end, search: `@${username}` });
+      return logs.sort((a, b) => {
+        return a.end < b.end ? 1 : -1;
+      });
+    },
+
+    async queryPeriod(periodname, start, end) {
+      let logs = await methods.query({ start, end, search: `~${periodname}` });
       return logs.sort((a, b) => {
         return a.end < b.end ? 1 : -1;
       });

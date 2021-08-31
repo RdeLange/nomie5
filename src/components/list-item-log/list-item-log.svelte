@@ -163,7 +163,7 @@
       {/if}
 
     </div>
-    <!-- Process the Note Content wi th the Textualizer 
+    <!-- Process the Note Content wi th the Textualizer  
     This really isn't special right now -->
     {#if displayLog.note.length}
       <NNoteTextualizer
@@ -177,7 +177,7 @@
 
     <slot />
 
-    {#if logMeta.trackers.length || logMeta.people.length}
+    {#if logMeta.trackers.length || logMeta.people.length || logMeta.periods.length}
       <div class="tracker-grid n-row">
         {#each displayLog.people as person}
           <NTrackerSmallBlock
@@ -186,6 +186,15 @@
             value={undefined}
             on:click={() => {
               Interact.elementOptions(person);
+            }} />
+        {/each}
+        {#each displayLog.periods as period}
+          <NTrackerSmallBlock
+            truncate={true}
+            element={period}
+            value={undefined}
+            on:click={() => {
+              Interact.elementOptions(period);
             }} />
         {/each}
         <!-- Interact.openStats(`@${person.id}`, displayLog.endDayjs());

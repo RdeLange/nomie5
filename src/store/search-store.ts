@@ -41,7 +41,7 @@ export class SearchTerm {
 // Nomie API Store
 
 let SearchStorage: SideStore;
-export type SearchModes = "trackers" | "history" | "people";
+export type SearchModes = "trackers" | "history" | "people" | "periods";
 interface ISearchStoreState {
   saved: Array<SearchTerm>;
   active: SearchTerm;
