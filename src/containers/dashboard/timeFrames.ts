@@ -1,6 +1,27 @@
+import dayjs, { Dayjs, OpUnitType } from "dayjs";
+
 import type { WidgetTimeFrameConfig } from "../../modules/dashboard/widget";
 
+
 export const timeFrames: Array<WidgetTimeFrameConfig> = [
+  {id: "custom",
+    label: "Custom",
+    start: {
+      startOf: "day",
+    },
+    end: {
+      endOf: "day",
+    },
+  },
+  {id: "period",
+    label: "Period",
+    start: {
+      startOf: "day",
+    },
+    end: {
+      endOf: "day",
+    },
+  },
   {
     id: "today",
     label: "Today",

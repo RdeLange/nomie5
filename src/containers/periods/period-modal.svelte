@@ -15,7 +15,8 @@
   import ListItem from "../../components/list-item/list-item.svelte";
   import Text from "../../components/text/text.svelte";
   import ColorPicker from "../../components/color-picker/color-picker.svelte";
-  
+  //import DateRangeSelect from "svelte-date-range-select@1.0.4";
+  import DateRangeSelect from "../../components/date-range-select/DateRangeSelect.js";
 
   // Container Items
   import PeriodObservations from "./period-log-observations.svelte";
@@ -41,7 +42,16 @@
   let activeStats;
   let lastActivePeriodKey;
   let activeLogs;
+  let showDateRangePicker = false;
 
+
+  let startdate = dayjs();
+  let enddate = dayjs();
+  
+  $: if (activePeriod) {
+    startdate = dayjs(activePeriod.start);
+    enddate = dayjs(activePeriod.end);
+  }
 
 
   $: if (
@@ -56,6 +66,16 @@
   const state = {
     view: initialview,
   };
+
+  function onApply({ detail }) {
+    activePeriod.start = detail.startDate;
+    activePeriod.end = detail.endDate;
+    showDateRangePicker = false;
+  }
+
+  function showDaterangePicker() {
+    showDateRangePicker = true;
+  }
 
   function datechange(evt, when) {
     if (when == "start") {
@@ -220,23 +240,14 @@
           placeholder="Display Name"
           bind:value={activePeriod.displayName}
         />
-        <Text left faded size="sm">Period Startdate:</Text>
-        <ListItem solo className="mx-0 w-100 py-1">
-          <DatePicker
-            bind:time={activePeriod.start}
-            on:change={(evt) => {
-              datechange(evt,"start");
-            }}
-          />
-        </ListItem>
-        <Text left faded size="sm">Period Enddate:</Text>
-        <ListItem solo className="mx-0 w-100 py-1">
-          <DatePicker 
-           bind:time={activePeriod.end}
-           on:change={(evt) => {
-            datechange(evt,"end");
-          }} />
-        </ListItem>
+          <div align="center">
+            <DateRangeSelect
+            bind:start={activePeriod.start}
+            bind:end={activePeriod.end}
+            heading={activePeriod.getDisplayName()}
+              />
+          </div>
+        
         <NInput
           type="textarea"
           placeholder="Notes"

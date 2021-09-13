@@ -8,6 +8,7 @@
   import NLayout from "../containers/layout/layout.svelte";
   import ShortcutPeriodButton from "../components/shortcut-button/shortcut-period-button.svelte";
   import ListPeriodItem from "../components/list-item/list-period-item.svelte";
+ 
 
   import { Lang } from "../store/lang";
   import { PeriodsStore } from "../store/periods-store";

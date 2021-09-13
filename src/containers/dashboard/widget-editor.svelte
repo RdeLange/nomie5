@@ -15,8 +15,13 @@
   import TrackableElement from "../../modules/trackable-element/trackable-element";
   import ButtonGroup from "../../components/button-group/button-group.svelte";
   import nid from "../../modules/nid/nid";
+  import DateRangeSelect from "../../components/date-range-select/DateRangeSelect.js";
+  import { PeriodsStore } from "../../store/periods-store";
+  
 
   import { timeFrames } from "./timeFrames";
+ 
+  
   import { widgetTypes } from "./widgetTypes";
   import type { IWidgetType } from "./widgetTypes";
 
@@ -25,17 +30,32 @@
   import { Lang } from "../../store/lang";
   import { Dashboard } from "../../modules/dashboard/dashboard";
   import type { t } from "i18next";
+  import type { WidgetTimeFrameConfig } from "../../modules/dashboard/widget";
+  import dayjs from "dayjs";
+  import { Dayjs } from "dayjs";
 
   export let value: Widget = null;
   const dispatch = createEventDispatcher();
 
   let dateType;
+  let lastdateType
+  let periodPick;
+  let lastperiodPick;
   let widget;
   let goalValue;
   let widgetTypeId;
   let widgetType: IWidgetType;
   let conditionalStyling: boolean = false;
   let editorView = "options";
+  let customStart: Dayjs;
+  let customEnd: Dayjs;
+  let customShow = false;
+  let periodShow = false;
+  let periodMargin = "0";
+  let lastperiodMargin;
+  let periods = [];
+  
+  
 
   $: if (widgetTypeId) {
     widgetType = widgetTypes.find(
@@ -58,13 +78,81 @@
    * On Date Type Change
    **/
   $: if (dateType) {
-    let timeFrame = timeFrames.find((t) => t.id == dateType);
-    value.timeRange = new WidgetTimeFrame(timeFrame);
-    if (value.timeRange.id == "today" || value.timeRange.id == "yesterday") {
-      value.includeAvg = false;
+      if (lastdateType != dateType) {
+        lastdateType = dateType;
+        let timeFrame = timeFrames.find((t) => t.id == dateType);
+          if (!value.adbTimeRangeEnabled){
+            value.timeRange = new WidgetTimeFrame(timeFrame);
+            if (value.timeRange.id == "today" || value.timeRange.id == "yesterday") {
+              value.includeAvg = false;}
+            if (value.timeRange.id == "custom") {
+              value.timeRange.label = "Period: "+dayjs(customStart).format('DD-MM-YYYY')+" - "+dayjs(customEnd).format('DD-MM-YYYY');
+              value.timeRange.start.date = customStart;
+              value.timeRange.end.date = customEnd;
+              customShow = true;}
+            else {customShow = false;}  
+            if (value.timeRange.id == "period") {
+              periodShow = true;}
+            else {periodShow = false;}  
+         }
+         else {
+            value.secondairyTimeRange = new WidgetTimeFrame(timeFrame);
+            
+            if (value.secondairyTimeRange.id == "custom") {
+              value.secondairyTimeRange.label = "Period: "+dayjs(customStart).format('DD-MM-YYYY')+" - "+dayjs(customEnd).format('DD-MM-YYYY');
+              value.secondairyTimeRange.start.date = customStart;
+              value.secondairyTimeRange.end.date = customEnd;
+              customShow = true;}
+            else {customShow = false;}  
+            if (value.secondairyTimeRange.id == "period") {
+              periodShow = true;}
+            else {periodShow = false;}  
+         }
+
+      }
+    }
+  
+  $: if (customStart || customEnd) {
+    if (customShow) {
+      if (!value.adbTimeRangeEnabled){
+        value.timeRange.start.date = customStart;
+        value.timeRange.end.date = customEnd;
+        value.timeRange.label = "Period: "+dayjs(customStart).format('DD-MM-YYYY')+" - "+dayjs(customEnd).format('DD-MM-YYYY');
+      }
+      else{
+        value.secondairyTimeRange.start.date = customStart;
+        value.secondairyTimeRange.end.date = customEnd;
+        value.secondairyTimeRange.label = "Period: "+dayjs(customStart).format('DD-MM-YYYY')+" - "+dayjs(customEnd).format('DD-MM-YYYY');
+      }
     }
   }
 
+
+  $: if (periodPick || periodMargin) {
+    if (lastperiodPick != periodPick || lastperiodMargin != periodMargin) {
+      lastperiodPick = periodPick;
+      lastperiodMargin = periodMargin;
+      if (periodShow){
+        if (!value.adbTimeRangeEnabled) {
+          let pickedperiod = PeriodsStore.get(periodPick);
+          let diff = (pickedperiod.end - pickedperiod.start);
+          let mrgn = diff*(periodMargin/100)
+          value.timeRange.start.date = dayjs(pickedperiod.start.valueOf()-mrgn);
+          value.timeRange.end.date = dayjs(pickedperiod.end.valueOf()+mrgn);
+          value.timeRange.label = pickedperiod.periodname;
+        }
+        else {
+          let pickedperiod = PeriodsStore.get(periodPick);
+          let diff = (pickedperiod.end - pickedperiod.start);
+          let mrgn = diff*(periodMargin/100)
+          value.secondairyTimeRang.start.date = dayjs(pickedperiod.start.valueOf()-mrgn);
+          value.secondairyTimeRang.end.date = dayjs(pickedperiod.end.valueOf()+mrgn);
+          value.secondairyTimeRang.label = pickedperiod.periodname;
+        }
+      }
+    }
+  }
+  
   let editorButtons = [];
 
   $: if (value) {
@@ -96,6 +184,22 @@
 
   function changeView(view) {
     editorView = view;
+  }
+
+  function loadPeriods() {
+    const longTimeAgo = dayjs().subtract(100, "years").toDate();
+
+    periods = getPeriods().sort((a, b) => {
+      return $PeriodsStore.periods[a].last < $PeriodsStore.periods[b].last ? 1 : -1;
+    });
+    
+  }
+
+  function getPeriods() {
+    // The $PeriodsStore.periods is a map - periodname is the key
+    
+      return Object.keys(($PeriodsStore || {}).periods || {});
+    
   }
 
   // async function moveWidget() {
@@ -265,7 +369,6 @@
   }
 
   function deletesectracker1() {
-    console.log("delete 1");
     value.secElement1 =
       value.secElement1 instanceof TrackableElement
         ? value.secElement2
@@ -275,7 +378,6 @@
   }
 
   function deletesectracker2() {
-    console.log("delete 2");
     value.secElement2 = null;
     value.secStats2 = value.stats;
   }
@@ -302,15 +404,58 @@
   }
 
   onMount(() => {
+    loadPeriods();
     if (value) {
-      if (value.timeRange) {
-        dateType = value.timeRange.id;
+      if (!value.adbTimeRangeEnabled) {
+        if (value.timeRange) {
+            dateType = value.timeRange.id;
+            if (value.timeRange.id == "custom") {
+              customStart = value.timeRange.start.date;
+              customEnd = value.timeRange.end.date;
+              customShow = true;
+            }
+            if (value.timeRange.id == "period") {
+              periodShow = true;
+              periodPick = value.timeRange.label;
+              let pickedperiod = PeriodsStore.get(periodPick);
+              periodMargin = (Math.round(100*((((((dayjs(value.timeRange.start.date).diff(dayjs(value.timeRange.end.date))))/(pickedperiod.end.valueOf()-pickedperiod.start.valueOf())) *-1)-1)/2))).toString();
+            }
+          }
+          if (value.compareValue) {
+            conditionalStyling = true;
+          }
+          widgetTypeId = value.type;
+          lastdateType = dateType;
+          lastperiodPick = periodPick;
+          lastperiodMargin = periodMargin;
+        
       }
-      if (value.compareValue) {
-        conditionalStyling = true;
-      }
-      widgetTypeId = value.type;
-    }
+      else {
+        
+          if (value.secondairyTimeRange) {
+            dateType = value.secondairyTimeRange.id;
+            if (value.secondairyTimeRange.id == "custom") {
+              customStart = value.secondairyTimeRange.start.date;
+              customEnd = value.secondairyTimeRange.end.date;
+              customShow = true;
+            }
+            if (value.secondairyTimeRange.id == "period") {
+              periodShow = true;
+              periodPick = value.secondairyTimeRange.label;
+              let pickedperiod = PeriodsStore.get(periodPick);
+              periodMargin = (Math.round(100*((((((dayjs(value.secondairyTimeRange.start.date).diff(dayjs(value.secondairyTimeRange.end.date))))/(pickedperiod.end.valueOf()-pickedperiod.start.valueOf())) *-1)-1)/2))).toString();
+            }
+          }
+          if (value.compareValue) {
+            conditionalStyling = true;
+          }
+          widgetTypeId = value.type;
+          lastdateType = dateType;
+          lastperiodPick = periodPick;
+          lastperiodMargin = periodMargin;
+        }
+    
+  }
   });
 </script>
 
@@ -455,6 +600,38 @@
               {/each}
             </Input>
           </ListItem>
+          {#if periodShow}
+            <ListItem className="p-0" bg="transparent">
+              <Input bind:value={periodPick} type="select" label="Period">
+                <option>Select</option>
+                {#each periods as period, index (index)}
+                  <option value={$PeriodsStore.periods[period].periodname}>{$PeriodsStore.periods[period].displayName}</option>
+                {/each}
+              </Input>
+            </ListItem>
+            <ListItem bg="transparent" className="p-0">
+              <Input
+                type="select"
+                label="Period Margin"
+                bind:value={periodMargin}
+              >
+                <option value="0">None</option>
+                <option value="5">5%</option>
+                <option value="10">10%</option>
+                <option value="25">25%</option>
+                <option value="50">50%</option>
+                <option value="75">75%</option>
+                <option value="100">100%</option>
+              </Input>
+            </ListItem>
+          {/if}
+          {#if customShow}
+            <DateRangeSelect
+            bind:start={customStart}
+            bind:end={customEnd}
+            heading='Custom Period'
+              />
+          {/if}
         {/if}
 
         {#if widgetTypeId == "value" && value.timeRange && ["today", "yesterday"].indexOf(value.timeRange.id) == -1}

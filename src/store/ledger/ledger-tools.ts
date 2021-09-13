@@ -269,8 +269,10 @@ export default class LedgerTools {
      * get the books, then query the results
      */
     // Set official start and end time
-    let startTime = options.start.startOf("day");
+  
     let endTime = options.end.endOf("day");
+    let startTime = options.start.startOf("day");
+    
     // Diff Betwen the two
     const bookFormat: any = appConfig.book_time_unit || "week";
     // How many different books do we need to get to cover this time span?

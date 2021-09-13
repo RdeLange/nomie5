@@ -65,6 +65,7 @@
   $: if (points && theChart && points.map((p) => p.y).join() !== lastPoints) {
     lastPoints = points.map((p) => p.y).join();
     loadData();
+    periodsUpdate("full");
   }
 
   $: if (
@@ -74,6 +75,7 @@
   ) {
     lastPoints2 = points2.map((p) => p.y).join();
     loadData();
+    periodsUpdate("full");
   }
 
   $: if (
@@ -83,6 +85,7 @@
   ) {
     lastPoints3 = points3.map((p) => p.y).join();
     loadData();
+    periodsUpdate("full");
   }
 
   // make sure the chart updates when other statistic view is selected in widget editor
@@ -94,13 +97,23 @@
   // make sure the chart updates when toggle show periods in widget editor
   $: if (showperiods !== lastshowperiods) {
     lastshowperiods = showperiods;
+    periodsUpdate("limitted");}
+    
+  function periodsUpdate(type){
     if (showperiods){
-      if (periodannotations.length > 0) {
-        theChart.options.annotation.annotations = periodannotations;}
-      else {
+      if (type == "limitted"){
+        if (periodannotations.length > 0) {
+          theChart.options.annotation.annotations = periodannotations;}
+        else {
+          loadPeriods();
+          theChart.options.annotation.annotations = periodannotations;}
+      }
+      if (type == "full"){
+        periodannotations = [];
         loadPeriods();
-        theChart.options.annotation.annotations = periodannotations;}
-      }  
+        theChart.options.annotation.annotations = periodannotations;
+      }
+    }
     else {theChart.options.annotation.annotations = [];}
     theChart.update();
   }
@@ -309,6 +322,7 @@
           duration: 0, // general animation time
         },
         annotation: {
+          drawTime: 'beforeDatasetsDraw',
           annotations: periodannotations,
         },
         tooltips: {

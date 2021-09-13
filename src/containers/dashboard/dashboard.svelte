@@ -21,6 +21,7 @@
   import StatsProcessor from "../../modules/stats/statsV5";
   import { Widget } from "../../modules/dashboard/widget";
   import Tracker from "../../modules/tracker/tracker";
+  import ToggleSwitch from "../../components/toggle-switch/toggle-switch.svelte";
 
   // Utils
   import { positivityFromLogs } from "../../utils/positivity/positivity";
@@ -29,13 +30,15 @@
 
   //Containers / Layouts
   import NLayout from "../layout/layout.svelte";
-  import { Dashboard } from "../../modules/dashboard/dashboard";
+  import { Dashboard, DashboardTimeFrame } from "../../modules/dashboard/dashboard";
+  
 
   // Stores
   import { Interact } from "../../store/interact";
   import { DashboardStore } from "../../store/dashboard-store";
   import { LedgerStore } from "./../../store/ledger.js";
   import { PeopleStore } from "./../../store/people-store.js";
+  import { PeriodsStore } from "./../../store/periods-store.js";
   import { TrackerStore } from "../../store/tracker-store";
   import { LastUsed } from "../../store/last-used";
   import type Person from "../../modules/person/person";
@@ -54,6 +57,9 @@
   import Empty from "../empty/empty.svelte";
   import LedgerTools from "../../store/ledger/ledger-tools";
   import Swipeable from "../../components/swipeable/swipeable.svelte";
+  import { timeFrames } from "./timeFrames";
+  import ToolbarGrid from "../../components/toolbar/toolbar-grid.svelte";
+  import DateRangeSelect from "../../components/date-range-select/DateRangeSelect.js";
   // import { getDashboardStartEndDates } from "./dashboard-helpers";
 
   let trackers: any; // holder of user Trackers - loaded from subscribe
@@ -67,20 +73,151 @@
   let editMode = false; // Toggle Edit mode
   let activePage = 0; // activePage - which page we're on in the array of dasboards
   // let lastActivePage; // last Active for managing reactiveness
-  let activeDashboard: Dashboard = {
-    id: "fake",
-    label: "Loading...",
-    widgets: [],
-  }; // Set a default dasboard
+  
+  let activeDashboard = new Dashboard()
+  // Set a default dasboard
   let stopRefresh;
   let loading = false;
   let firstDayOfWeek: "1" | "2" = "1";
   let dtFormat;
+  let dateType;
+  let lastdateType
+  let periodPick;
+  let lastperiodPick;
+  let customStart: Dayjs;
+  let customEnd: Dayjs;
+  let customShow = false;
+  let periodShow = false;
+  let periodMargin = "0";
+  let lastperiodMargin;
+  let periods = {};
+  let showTimeRange = true;
+  let forcedTimeRange = false;
+  let periodInit = false;
+  
+  
+  /**
+   * Toggle Forced TimeRange
+   */
+  async function toggleForcedTimeRange(){
+    let tempTimeRange;
+    
+    for (let i = 0; i < activeDashboard.widgets.length; i++) {
+      if (activeDashboard.widgets[i].timeRange) {
+        if (activeDashboard.widgets[i].timeRange.id != "today" && activeDashboard.widgets[i].timeRange.id != "yesterday"){
+          
+            
+            if (activeDashboard.forceTimeRange != activeDashboard.widgets[i].adbTimeRangeEnabled) {
+              tempTimeRange = activeDashboard.widgets[i].secondairyTimeRange;
+              activeDashboard.widgets[i].secondairyTimeRange = activeDashboard.widgets[i].timeRange;
+              activeDashboard.widgets[i].timeRange = tempTimeRange;
+              activeDashboard.widgets[i].adbTimeRangeEnabled = activeDashboard.forceTimeRange;
+              if (activeDashboard.forceTimeRange){
+                activeDashboard.widgets[i].timeRange = activeDashboard.timeRange;
+              }
+              activeDashboard.widgets[i] = await getWidgetStats(activeDashboard.widgets[i]);
+            }
+        
+        }
+    }
+  }
+  console.log("Close toggle and Update Widgets");;
+  }
+  
+  async function updateWidgets(){
+    for (let i = 0; i < activeDashboard.widgets.length; i++) {
+      if (activeDashboard.widgets[i].timeRange) {
+        if (activeDashboard.widgets[i].timeRange.id != "today" && activeDashboard.widgets[i].timeRange.id != "yesterday"){
+          if (activeDashboard.forceTimeRange){
+            activeDashboard.widgets[i].timeRange = activeDashboard.timeRange;
+          }
+          else{
+            activeDashboard.widgets[i].secondairyTimeRange = activeDashboard.timeRange;
+          }
+          activeDashboard.widgets[i] = await getWidgetStats(activeDashboard.widgets[i]);  
+        }
+    }
+  }
+  console.log("Close edit and Update Widgets");
+  }
+  
+
   /**
    * Toggle Edit more
    */
   function toggleEdit() {
     editMode = !editMode;
+  }
+
+  function toggleTimeRange() {
+    showTimeRange = !showTimeRange;
+  }
+
+  function loadPeriods() {
+    if (!periodInit) {
+    periods = getPeriods().sort((a, b) => {
+      return $PeriodsStore.periods[a].last < $PeriodsStore.periods[b].last ? 1 : -1;
+    });
+    periodInit = true;
+    
+
+  }
+  }
+
+  function getPeriods() {
+    // The $PeriodsStore.periods is a map - periodname is the key
+    
+      return Object.keys(($PeriodsStore || {}).periods || {});
+    
+  }
+  /**
+   * On Date Type Change
+   **/
+   $: if (dateType) {
+    if (lastdateType != dateType) {
+      lastdateType = dateType;
+      let timeFrame = timeFrames.find((t) => t.id == dateType);
+      activeDashboard.timeRange = new DashboardTimeFrame(timeFrame);
+      
+      if (activeDashboard.timeRange.id == "custom") {
+        activeDashboard.timeRange.label = "Period: "+dayjs(customStart).format('DD-MM-YYYY')+" - "+dayjs(customEnd).format('DD-MM-YYYY');
+        activeDashboard.timeRange.start.date = customStart;
+        activeDashboard.timeRange.end.date = customEnd;
+        customShow = true;}
+      else {customShow = false;}  
+      if (activeDashboard.timeRange.id == "period") {
+        periodShow = true;}
+      else {periodShow = false;}  
+    }
+}
+  
+  $: if (customStart || customEnd) {
+    if (customShow) {
+      activeDashboard.timeRange.start.date = customStart;
+      activeDashboard.timeRange.end.date = customEnd;
+      activeDashboard.timeRange.label = "Period: "+dayjs(customStart).format('DD-MM-YYYY')+" - "+dayjs(customEnd).format('DD-MM-YYYY');}
+  }
+
+
+  $: if (periodPick || periodMargin) {
+    if (lastperiodPick != periodPick || lastperiodMargin != periodMargin) {
+      lastperiodPick = periodPick;
+      lastperiodMargin = periodMargin;
+      if (periodShow){
+        let pickedperiod = PeriodsStore.get(periodPick);
+        let diff = (pickedperiod.end - pickedperiod.start);
+        let mrgn = diff*(periodMargin/100)
+        activeDashboard.timeRange.start.date = dayjs(pickedperiod.start.valueOf()-mrgn);
+        activeDashboard.timeRange.end.date = dayjs(pickedperiod.end.valueOf()+mrgn);
+        activeDashboard.timeRange.label = pickedperiod.periodname;
+      }
+    }
+    
+  }
+  
+  $: if(forcedTimeRange || !forcedTimeRange) {
+    activeDashboard.forceTimeRange = forcedTimeRange;
+    toggleForcedTimeRange();
   }
 
   $: firstDayOfWeek = $UserStore.meta.firstDayOfWeek;
@@ -394,7 +531,31 @@
         );
       }
     }
-
+    if (activeDashboard) {
+      if (activeDashboard.timeRange) {
+        dateType = activeDashboard.timeRange.id;
+        forcedTimeRange = activeDashboard.forceTimeRange;
+        
+        if (activeDashboard.timeRange.id == "custom") {
+          customStart = activeDashboard.timeRange.start.date;
+          customEnd = activeDashboard.timeRange.end.date;
+          customShow = true;
+        }
+        else {customShow = false}
+        if (activeDashboard.timeRange.id == "period") {
+          periodShow = true;
+          periodPick = activeDashboard.timeRange.label;
+          let pickedperiod = PeriodsStore.get(periodPick);
+          periodMargin = (Math.round(100*((((((dayjs(activeDashboard.timeRange.start.date).diff(dayjs(activeDashboard.timeRange.end.date))))/(pickedperiod.end.valueOf()-pickedperiod.start.valueOf())) *-1)-1)/2))).toString();
+        }
+        else {periodShow = false}
+      }
+      
+      
+      lastdateType = dateType;
+      lastperiodPick = periodPick;
+      lastperiodMargin = periodMargin;
+    }
     // Set the Active Dashboard
   }
 
@@ -508,6 +669,8 @@
    * On Mount / On Destroy
    **/
   onMount(() => {
+    loadPeriods();
+    
     dtFormat = UserStore.getDateTimeFormat();
 
     unsubTrackers = TrackerStore.subscribe((tkrs) => {
@@ -535,12 +698,14 @@
         }
       }
     });
+    
   });
 
   async function done() {
+    updateWidgets();
     DashboardStore.save();
     toggleEdit();
-  }
+    }
 
   async function deleteDashboard() {
     let confirmed = await Interact.confirm(
@@ -640,6 +805,7 @@
         <Icon name="settings" />
       </Button>
     </Toolbar>
+    
   </header>
   {#if activeDashboard && !loading}
     <div class="container h-100">
@@ -662,7 +828,57 @@
           </Button>
         </div>
         <hr class="my-3 divider center" />
+          {#if showTimeRange}
+            <div class="px-2 mt-2 mb-2 n-toolbar n-row">
+              <Input bind:value={dateType} type="select" label="Timeframe">
+                <option>Select</option>
+                {#each timeFrames as timeFrame}
+                  <option value={timeFrame.id}>{timeFrame.label}</option>
+                {/each}
+              </Input>
+              <ToggleSwitch bind:value={forcedTimeRange}></ToggleSwitch>
+        </div> 
+          {#if periodShow}
+          <div class="px-2 mt-2 mb-2 n-toolbar n-row">
+              <Input bind:value={periodPick} type="select" label="Period">
+                <option>Select</option>
+                {#each periods as period, index (index)}
+                  <option value={$PeriodsStore.periods[period].periodname}>{$PeriodsStore.periods[period].displayName}</option>
+                {/each}
+              </Input>
+            </div>
+            <div class="px-2 mt-2 mb-2 n-toolbar n-row">
+                <Input
+                  type="select"
+                  label="Period Margin"
+                  bind:value={periodMargin}
+                >
+                  <option value="0">None</option>
+                  <option value="5">5%</option>
+                  <option value="10">10%</option>
+                  <option value="25">25%</option>
+                  <option value="50">50%</option>
+                  <option value="75">75%</option>
+                  <option value="100">100%</option>
+                </Input>
+              </div>
+            {/if}
+            {#if customShow}
+              <div align = "center">
+                <DateRangeSelect
+                bind:start={customStart}
+                bind:end={customEnd}
+                heading='Custom Period'
+                />
+              </div>
+            {/if}
+            <hr class="my-3 divider center" />
+          {/if}
       {/if}
+      {#if !editMode && forcedTimeRange}
+        <div align="center"><Text size="md" className="text-center flex-grow text-uppercase font-weight-bold text-primary-bright" >⚠️ DASHBOARD TIMERANGE ACTIVE ⚠️</Text></div>
+        <div align="center"><Text size="md" className="text-center flex-grow text-uppercase font-weight-bold">{activeDashboard.timeRange.getLabel()}</Text></div>
+      {/if} 
       {#if !editMode && activeDashboard && activeDashboard.widgets}
         <Swipeable
           on:left={DashboardStore.next}

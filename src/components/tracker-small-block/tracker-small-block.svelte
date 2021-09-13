@@ -34,7 +34,7 @@
     } else if (trackerElement.type == "person") {
       return false;
     } else if (trackerElement.obj && trackerElement.obj.type == "tick") {
-      return true;
+      return false;
     } else if (trackerElement.value !== undefined) {
       return true;
     } else {

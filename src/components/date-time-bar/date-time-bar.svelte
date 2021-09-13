@@ -21,6 +21,7 @@
   export let style: string = "";
   export let calendarClass: string = "";
   export let calendarPosition: "top" | "bottom" = "bottom";
+  export let large = true;
 
   let lastDate;
   let _date: Dayjs; // local
@@ -130,8 +131,8 @@
 
     <div class="date-time-bar" {style}>
       <div class="n-row">
-        <slot name="left" />
-        <Button
+       <slot name="left" />
+       <Button
           className="date justify-content-start flex-grow "
           color="clear"
           on:click={() => {
@@ -146,13 +147,14 @@
           </Text>
         </Button>
       </div>
-
-      <TimeSelect
-        is24Hour={$UserStore.meta.is24Hour ? true : false}
-        bind:value={_date}
-        on:change={(evt) => {
-          setDate(evt.detail);
-        }} />
+      {#if large}
+        <TimeSelect
+          is24Hour={$UserStore.meta.is24Hour ? true : false}
+          bind:value={_date}
+          on:change={(evt) => {
+            setDate(evt.detail);
+          }} />
+      {/if}    
     </div>
     <div
       class="animate up view date "

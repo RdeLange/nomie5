@@ -51,6 +51,7 @@ export class WidgetDate {
     if (this.endOf) {
       date = date.endOf(this.endOf);
     }
+    
     return date;
   }
 }
@@ -84,8 +85,9 @@ export class WidgetTimeFrame {
   }
 
   public getLabel(): string {
-    let defaultDate = this.start.date ? `${this.start.date.format("MMM DD")} to ${this.end.date.format("MMM DD YYYY")}` : "Unknown";
-    return this.label || defaultDate;
+    //let defaultDate = this.start.date ? `${this.start.date.format("MMM DD")} to ${this.end.date.format("MMM DD YYYY")}` : "Unknown";
+    //return this.label || defaultDate;
+    return this.label;
   }
 }
 
@@ -103,6 +105,8 @@ export interface WidgetConfig {
   stats2?: "none" | "avg" | "sma-7" | "sma-15" | "sma-30" | "ema-7" | "ema-15" | "ema-30" | "split-11" | "split-12" | "split-13" | "cumm";
   type?: string;
   timeRange?: WidgetTimeFrame;
+  secondairyTimeRange?: WidgetTimeFrame;
+  adbTimeRangeEnabled?: boolean;
   includeAvg?: boolean;
   description?: string;
   compareValue?: number;
@@ -140,6 +144,8 @@ export class Widget {
   public stats?: any;
   public timeFormat?: string = "h:mm a";
   public timeRange?: WidgetTimeFrame;
+  public secondairyTimeRange?: WidgetTimeFrame;
+  public adbTimeRangeEnabled?: boolean = false;
   public type?: string = "value";
   public loading?: boolean = false;
   public secElement1?: TrackableElement;
@@ -166,9 +172,13 @@ export class Widget {
     // Including Avg
     this.includeAvg = payload.includeAvg ? true : false;
     this.showperiods = payload.showperiods ? true : false;
+    this.adbTimeRangeEnabled = payload.adbTimeRangeEnabled ? true : false;
     // If a timeRange
     if (payload.timeRange) {
       this.timeRange = new WidgetTimeFrame(payload.timeRange);
+    }
+    if (payload.secondairyTimeRange) {
+      this.secondairyTimeRange = new WidgetTimeFrame(payload.secondairyTimeRange);
     }
     // If an element
     if (payload.element) {
@@ -249,7 +259,7 @@ export class Widget {
       }
     } else if (this.timeRange && this.timeRange.start && this.timeRange.start.date) {
       // If a set Date
-      return this.timeRange.start.date;
+      return dayjs(this.timeRange.start.date);
     } else if (this.timeRange && this.timeRange.start) {
       return this.timeRange.start.toDate();
     } else {
@@ -270,7 +280,8 @@ export class Widget {
           break;
       }
     } else if (this.timeRange && this.timeRange.end && this.timeRange.end.date) {
-      return this.timeRange.end.date;
+      return dayjs(this.timeRange.end.date);
+      //return this.timeRange.end.date;
     } else if (this.timeRange && this.timeRange.end) {
       return this.timeRange.end.toDate();
     } else {

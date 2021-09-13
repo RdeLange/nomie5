@@ -14,6 +14,7 @@
   export let time: number;
   export let className: string = "";
   export let style: string = "";
+  export let large = false;
 
   //consts
   const dispatch = createEventDispatcher();
@@ -64,6 +65,7 @@
   {#if Device.is(/(firefox)/gi)}
     <DateTimeBar
       {style}
+      bind:large={large}
       bind:date={time}
       on:change={(event) => {
         let oldtime = event.detail.toDate().getTime();

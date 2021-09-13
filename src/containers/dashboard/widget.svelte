@@ -41,6 +41,7 @@
   const dispatch = createEventDispatcher();
   const id = nid();
   export let widget: Widget;
+  
 
   function getLabel(element: TrackableElement) {
     if (element.type == "person") {
