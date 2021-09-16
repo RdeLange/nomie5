@@ -521,6 +521,19 @@
     }
 
     activeDashboard = dboard || new Dashboard();
+    if (!activeDashboard.timeRange){
+      activeDashboard.timeRange = new DashboardTimeFrame({
+    id: "last-30",
+    label: "Last 30 days",
+    start: {
+      subtract: [29, "day"],
+      startOf: "day",
+    },
+    end: {
+      endOf: "day",
+    },
+  })
+    }
     ready = true;
     loading = false;
 

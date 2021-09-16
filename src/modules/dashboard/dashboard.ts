@@ -109,6 +109,19 @@ export class Dashboard {
     if (starter.timeRange) {
       this.timeRange = new DashboardTimeFrame(starter.timeRange);
     }
+    else {
+      this.timeRange = new DashboardTimeFrame({
+        id: "last-30",
+        label: "Last 30 days",
+        start: {
+          subtract: [29, "day"],
+          startOf: "day",
+        },
+        end: {
+          endOf: "day",
+        },
+      })
+    }
 
     // Migrate from Blocks
     if (starter.blocks) {
