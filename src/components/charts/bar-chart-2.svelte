@@ -7,20 +7,15 @@
   import nid from "../../modules/nid/nid";
   import { Interact } from "../../store/interact";
   import ignoreArrayZeros from "../../modules/stats/ignore-zeros";
-  import _, { forEach, round } from "lodash";
   import statUtils from "./bar-chart-2-stat-utils";
   import additionalDatasets from "./bar-chart-2-additional-datasets";
-  import annotationPlugin from "chartjs-plugin-annotation";
   import { PeriodsStore } from "../../store/periods-store";
-  import dayjs from "dayjs";
 
   //Chart.register(annotationPlugin);
   export let showperiods: boolean = false;
   export let widgetstats: any;
   export let math = "";
   export let labels = [];
-  //export let labels2 = [];
-  //export let labels3 = [];
   export let height = 200;
 
   export let mainlabel = "";

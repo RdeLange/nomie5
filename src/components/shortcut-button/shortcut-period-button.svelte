@@ -1,11 +1,7 @@
 <script lang="ts">
   import ShortcutButton from "./shortcut-button.svelte";
-
-  import { PeriodStore } from "../../store/periods-store";
   import dayjs from "dayjs";
   import { createEventDispatcher } from "svelte";
-  import { Interact } from "../../store/interact";
-
   import Avatar from "../avatar/avatar.svelte";
   export let period: Period;
 

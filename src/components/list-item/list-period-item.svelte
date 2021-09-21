@@ -3,7 +3,6 @@
   import Button from "../../components/button/button.svelte";
   import Text from "../../components/text/text.svelte";
   import Icon from "../../components/icon/icon.svelte";
-  import { PeriodStore } from "../../store/periods-store";
   import dayjs from "dayjs";
   import { createEventDispatcher } from "svelte";
   import { Interact } from "../../store/interact";

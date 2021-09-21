@@ -8,19 +8,11 @@
   import { Interact } from "../../store/interact";
   import ignoreArrayZeros from "../../modules/stats/ignore-zeros";
   import _ from "lodash";
-  import statUtils from "./bar-chart-2-stat-utils";
-  import additionalDatasets from "./bar-chart-2-additional-datasets";
-import { element } from "svelte/internal";
-
-  export let labels = [];
-  export let labels2 = [];
-  export let labels3 = [];
   export let height = 200;
 
   export let mainlabel = "";
   export let seclabel1 = "";
   export let seclabel2 = "";
-  export let title = "";
   export let color = "#4d84a1";
   export let color2 = "#4d84a1";
   export let color3 = "#4d84a1";
@@ -32,8 +24,6 @@ import { element } from "svelte/internal";
   export let yFormat: Function = (y) => y;
   export let hideYTicks: boolean = false;
   export let hideXTicks: boolean = false;
-  export let type: string = "bar";
-  // export let beginAtZero: boolean = true;
   export let showSelected: boolean = true;
   export let ignoreZero: boolean = false;
   export let ignoreZero2: boolean = false;
