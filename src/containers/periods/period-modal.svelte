@@ -9,14 +9,10 @@
   import NToolbarGrid from "../../components/toolbar/toolbar-grid.svelte";
   import ButtonGroup from "../../components/button-group/button-group.svelte";
   import Dymoji from "../../components/dymoji/dymoji.svelte";
-  import LogItem from "../../components/list-item-log/list-item-log.svelte";
-  import BarChart from "../../components/charts/bar-chart.svelte";
-  import DatePicker from "../../components/date-picker/date-picker.svelte";
-  import ListItem from "../../components/list-item/list-item.svelte";
   import Text from "../../components/text/text.svelte";
   import ColorPicker from "../../components/color-picker/color-picker.svelte";
-  //import DateRangeSelect from "svelte-date-range-select@1.0.4";
   import DateRangeSelect from "../../components/date-range-select/DateRangeSelect.js";
+  import Button from "../../components/button/button.svelte";
 
   // Container Items
   import PeriodObservations from "./period-log-observations.svelte";
@@ -30,29 +26,21 @@
   import domtoimage from "dom-to-image-chrome-fix";
   import dayjs from "dayjs";
 
+  //Stores
   import { LedgerStore } from "../../store/ledger";
   import { Interact } from "../../store/interact";
   import { PeriodsStore } from "../../store/periods-store";
-  import Button from "../../components/button/button.svelte";
+  
   export let initialview = "observations";
+  
   let domVisible = false;
-  let iconBase64 = null;
-  //let periodColor = "#00BCD4";
   let activePeriod;
-  let activeStats;
   let lastActivePeriodKey;
-  let activeLogs;
-  let showDateRangePicker = false;
-
-
-  let startdate = dayjs();
-  let enddate = dayjs();
   
   $: if (activePeriod) {
     startdate = dayjs(activePeriod.start);
     enddate = dayjs(activePeriod.end);
   }
-
 
   $: if (
     $Interact.periods.active &&
@@ -66,24 +54,6 @@
   const state = {
     view: initialview,
   };
-
-  function onApply({ detail }) {
-    activePeriod.start = detail.startDate;
-    activePeriod.end = detail.endDate;
-    showDateRangePicker = false;
-  }
-
-  function showDaterangePicker() {
-    showDateRangePicker = true;
-  }
-
-  function datechange(evt, when) {
-    if (when == "start") {
-      activePeriod.start = new Date(evt.detail);
-    } else if (when == "end") {
-      activePeriod.end = new Date(evt.detail);
-      }
-  }
 
   async function deletePeriod() {
     let confirmed = await Interact.confirm(
@@ -136,16 +106,6 @@
     Interact.period(null, null);
   }
 
-  async function loadActiveLogs() {
-    let active = $Interact.periods.active;
-    activePeriod = new Period($PeriodsStore.periods[active]);
-    activeLogs = await LedgerStore.queryPeriod(
-      active,
-      dayjs().subtract(1, "year"),
-      dayjs()
-    );
-  }
-
   async function selectImage(evt) {
     const toBase64 = (file) =>
       new Promise((resolve, reject) => {
@@ -154,8 +114,7 @@
         reader.onload = () => resolve(reader.result);
         reader.onerror = (error) => reject(error);
       });
-
-    let input = evt.target;
+      
     let files = evt.target.files;
     let iconBase64 = await toBase64(files[0]);
     await tick(20);

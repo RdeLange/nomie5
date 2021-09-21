@@ -13,7 +13,6 @@ import { Interact } from "./interact";
 import { Dashboard } from "../modules/dashboard/dashboard";
 
 // Stores
-import { Device } from "./device-store";
 import { Lang } from "./lang";
 
 const console = new Logger("📊 $DashboardStore");

@@ -9,14 +9,12 @@
   import ShortcutPeriodButton from "../components/shortcut-button/shortcut-period-button.svelte";
   import ListPeriodItem from "../components/list-item/list-period-item.svelte";
  
-
   import { Lang } from "../store/lang";
   import { PeriodsStore } from "../store/periods-store";
   import { Interact } from "../store/interact";
   import { LedgerStore } from "../store/ledger";
   import { SearchStore } from "../store/search-store";
   import TrackableElement from "../modules/trackable-element/trackable-element";
-
   import dayjs from "dayjs";
   import Empty from "../containers/empty/empty.svelte";
   export const location = undefined;

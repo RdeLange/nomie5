@@ -1,18 +1,11 @@
 <script lang="ts">
-  import PositivityBar from "../../components/positivity-bar/positivity-bar.svelte";
-  import BarChart from "../../components/charts/bar-chart-2.svelte";
   import TrackerSmallBlock from "../../components/tracker-small-block/tracker-small-block.svelte";
   import Text from "../../components/text/text.svelte";
   import type { Widget } from "../../modules/dashboard/widget";
   import { createEventDispatcher } from "svelte";
-  import Pie from "../../components/charts/pie.svelte";
   import Icon from "../../components/icon/icon.svelte";
   import Button from "../../components/button/button.svelte";
-  import { strToColor } from "../../components/dymoji/dymoji";
-  import dayjs from "dayjs";
-  import { element } from "svelte/internal";
   import nid from "../../modules/nid/nid";
-  import Calendar from "../../components/calendar/calendar.svelte";
 
   // Widgets
   import WidgetWhatTime from "./widgets/widget-what-time.svelte";
@@ -26,7 +19,6 @@
   import WidgetMap from "./widgets/widget-map.svelte";
   import WidgetStreak from "./widgets/widget-streak.svelte";
 
-  import { LastUsed } from "../../store/last-used"; 
   import { Interact } from "../../store/interact";
   import { DashboardStore } from "../../store/dashboard-store";
   import Spinner from "../../components/spinner/spinner.svelte";
@@ -35,7 +27,6 @@
   import { TrackerStore } from "../../store/tracker-store";
   import { ActiveLogStore } from "../../store/active-log";
   import NLog from "../../modules/nomie-log/nomie-log";
-  import LabelMeta from "../../components/label-meta/label-meta.svelte";
   import type TrackableElement from "../../modules/trackable-element/trackable-element";
 
   const dispatch = createEventDispatcher();

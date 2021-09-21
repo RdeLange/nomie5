@@ -14,13 +14,11 @@
   import Modal from "../../components/modal/modal.svelte";
   import NText from "../../components/text/text.svelte";
   import SortableList from "./../../components/sortable-list/sortable-list.svelte";
-  import Stepper from "../../components/stepper/stepper.svelte";
   import Text from "./../../components/text/text.svelte";
   import TrackerSmallBlock from "../../components/tracker-small-block/tracker-small-block.svelte";
   // modules
   import StatsProcessor from "../../modules/stats/statsV5";
   import { Widget } from "../../modules/dashboard/widget";
-  import Tracker from "../../modules/tracker/tracker";
   import ToggleSwitch from "../../components/toggle-switch/toggle-switch.svelte";
 
   // Utils
@@ -50,17 +48,12 @@
   import { truncateText } from "../../utils/text/text";
   import { UserStore } from "../../store/user-store";
   import tick from "../../utils/tick/tick";
-  import ButtonGroup from "../../components/button-group/button-group.svelte";
   import nid from "../../modules/nid/nid";
   import Toolbar from "../../components/toolbar/toolbar.svelte";
   import { SearchStore } from "../../store/search-store";
   import Empty from "../empty/empty.svelte";
-  import LedgerTools from "../../store/ledger/ledger-tools";
-  import Swipeable from "../../components/swipeable/swipeable.svelte";
   import { timeFrames } from "./timeFrames";
-  import ToolbarGrid from "../../components/toolbar/toolbar-grid.svelte";
   import DateRangeSelect from "../../components/date-range-select/DateRangeSelect.js";
-  // import { getDashboardStartEndDates } from "./dashboard-helpers";
 
   let trackers: any; // holder of user Trackers - loaded from subscribe
   let people: any; // holder of User People - loaded from subscribe

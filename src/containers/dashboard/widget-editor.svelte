@@ -10,53 +10,41 @@
   import ToggleSwitch from "../../components/toggle-switch/toggle-switch.svelte";
   import Icon from "../../components/icon/icon.svelte";
   import TinyColorPicker from "../../components/color-picker/tiny-color-picker.svelte";
-  import { TrackerStore } from "../../store/tracker-store";
   import TrackerConfig from "../../modules/tracker/tracker";
   import TrackableElement from "../../modules/trackable-element/trackable-element";
   import ButtonGroup from "../../components/button-group/button-group.svelte";
-  import nid from "../../modules/nid/nid";
   import DateRangeSelect from "../../components/date-range-select/DateRangeSelect.js";
   import { PeriodsStore } from "../../store/periods-store";
   
-
   import { timeFrames } from "./timeFrames";
- 
-  
   import { widgetTypes } from "./widgetTypes";
   import type { IWidgetType } from "./widgetTypes";
 
   import { Interact } from "../../store/interact";
-  import { DashboardStore } from "../../store/dashboard-store";
   import { Lang } from "../../store/lang";
-  import { Dashboard } from "../../modules/dashboard/dashboard";
-  import type { t } from "i18next";
-  import type { WidgetTimeFrameConfig } from "../../modules/dashboard/widget";
   import dayjs from "dayjs";
-  import { Dayjs } from "dayjs";
+ // import { Dayjs } from "dayjs";
 
   export let value: Widget = null;
-  const dispatch = createEventDispatcher();
 
   let dateType;
   let lastdateType
   let periodPick;
   let lastperiodPick;
-  let widget;
-  let goalValue;
   let widgetTypeId;
   let widgetType: IWidgetType;
   let conditionalStyling: boolean = false;
   let editorView = "options";
-  let customStart: Dayjs;
-  let customEnd: Dayjs;
+  //let customStart: Dayjs;
+  //let customEnd: Dayjs;
+  let customStart;
+  let customEnd;
   let customShow = false;
   let periodShow = false;
   let periodMargin = "0";
   let lastperiodMargin;
   let periods = [];
   
-  
-
   $: if (widgetTypeId) {
     widgetType = widgetTypes.find(
       (widgetType) => widgetType.id == widgetTypeId

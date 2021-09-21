@@ -19,8 +19,8 @@
   export let widgetstats: any;
   export let math = "";
   export let labels = [];
-  export let labels2 = [];
-  export let labels3 = [];
+  //export let labels2 = [];
+  //export let labels3 = [];
   export let height = 200;
 
   export let mainlabel = "";

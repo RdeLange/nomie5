@@ -15,7 +15,6 @@
   import PouchDBOptions from "../components/storage/pouchdb.svelte";
   import Spacer from "../components/spacer/spacer.svelte";
   import List from "../components/list/list.svelte";
-  import Row from "../components/row/row.svelte";
   import Divider from "../components/divider/divider.svelte";
 
   // Containers
@@ -50,7 +49,6 @@
 
   import { LastUsed } from "../store/last-used";
   import { AppStore } from "../store/app-store";
-  import Sponsors from "../components/sponsors/sponsors.svelte";
   import ToggleSwitch from "../components/toggle-switch/toggle-switch.svelte";
   import { ApiStore } from "../containers/api/api-store";
 
