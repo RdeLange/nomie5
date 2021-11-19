@@ -84,6 +84,9 @@ import { ApiStore } from "../api/api-store";
       {#if $FeatureStore.people}
         <AppTab link={NPaths.routes.people()} icon="user" label={Lang.t('tabs.people', 'People')} />
       {/if}
+      {#if $FeatureStore.journals}
+        <AppTab link={NPaths.routes.journals()} icon="book" label={Lang.t('tabs.journals', 'Journals')} />
+      {/if}
       {#if $FeatureStore.periods}
         <AppTab link={NPaths.routes.periods()} icon="eye" label={Lang.t('tabs.periods', 'Periods')} />
       {/if}

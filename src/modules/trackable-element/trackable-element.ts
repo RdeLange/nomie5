@@ -2,7 +2,7 @@ import snakeCase from "../../utils/snake-case/snake-case";
 import stringToValue from "../../utils/string-to-value/string-to-value";
 import extractor from "../../utils/extract/extract";
 
-export type ITrackableElementType = "tracker" | "person" | "period" | "context" | "generic" | "line-break" | "link";
+export type ITrackableElementType = "tracker" | "person" | "period" | "journal" |"context" | "generic" | "line-break" | "link";
 export interface ITrackableElement {
   id?: string;
   type?: ITrackableElementType;
@@ -30,7 +30,7 @@ export default class TrackableElement {
   constructor(starter: ITrackableElement) {
     if (typeof starter == "object") {
       this.id = starter.id; // brandon of @brandon, meet of #meet, home of +home
-      this.type = starter.type; // tracker, person, period, context
+      this.type = starter.type; // tracker, person, period, journal, context
       this.raw = starter.raw; // the raw string
       this.value = starter.value; // any value passed or 1
       this.prefix = starter.prefix; // @ # or +
@@ -72,10 +72,14 @@ export default class TrackableElement {
           this.prefix = "@";
           this.type = "person";
           break;
-        case "@":
+        case "~":
           this.prefix = "~";
           this.type = "period";
-          break;  
+          break; 
+        case "§":
+          this.prefix = "§";
+          this.type = "journal";
+          break;    
       }
     }
   }
@@ -91,7 +95,10 @@ export default class TrackableElement {
         break;
       case "period":
         return "~";
-        break;  
+        break; 
+      case "journal":
+        return "§";
+        break;   
       case "context":
         return "+";
         break;

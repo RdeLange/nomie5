@@ -19,6 +19,7 @@
   import SearchHistory from "./search-history.svelte";
   import SearchTrackers from "./search-trackers.svelte";
   import SearchPeople from "./search-people.svelte";
+  import SearchJournals from "./search-journals.svelte";
   import SearchRecent from "./search-recent.svelte";
   import Modal from "../../components/modal/modal.svelte";
   import ButtonGroup from "../../components/button-group/button-group.svelte";
@@ -69,6 +70,13 @@
           className={$SearchStore.view == 'people' ? 'active' : ''}>
           {Lang.t('general.people', 'People')}
         </Button>
+        <Button
+          on:click={() => {
+            SearchStore.view('journals');
+          }}
+          className={$SearchStore.view == 'journals' ? 'active' : ''}>
+          {Lang.t('general.journals', 'Journals')}
+        </Button>
       </ButtonGroup>
       <div style="width:40px" />
     </nav>
@@ -80,6 +88,8 @@
       <SearchTrackers term={($SearchStore.active || {}).term} />
     {:else if $SearchStore.view === 'people' && $SearchStore.show}
       <SearchPeople term={($SearchStore.active || {}).term} />
+    {:else if $SearchStore.view === 'journals' && $SearchStore.show}
+      <SearchJournals term={($SearchStore.active || {}).term} />  
     {/if}
     {#if !$SearchStore.active && $SearchStore.show}
       <SearchRecent />

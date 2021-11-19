@@ -122,6 +122,26 @@
     }
   }
 
+  async function compareJournal() {
+    let journals: any = await Interact.select("journal", true);
+    if (journals.length) {
+      for (var i = 0; i < journals.length; i++) {
+        const journal = journals[i];
+        let compareObj = new StatsRef({
+          type: "journal",
+          key: journal.journalname,
+          label: journal.displayName,
+          base: journal,
+          is24Hour: $UserStore.meta.is24Hour,
+        });
+        await compareObj.getStats(timeSpan, fromDate, toDate);
+        state.compare.push(compareObj);
+      }
+      state.compare = state.compare;
+      rememberCompare();
+    }
+  }
+
   async function compareContext() {
     let contexts: any = await Interact.select("context", true);
     if (contexts.length) {
@@ -160,7 +180,7 @@
   }
 
   async function compareType() {
-    let types = ["Tracker", "Person", "Context", "Search Term", "Pick for me"];
+    let types = ["Tracker", "Person", "Journal", "Context", "Search Term", "Pick for me"];
     Interact.popmenu({
       buttons: types.map((type) => {
         return {
@@ -173,6 +193,9 @@
               case "Person":
                 await comparePerson();
                 break;
+              case "Journal":
+                await compareJournal();
+                break;  
               case "Context":
                 await compareContext();
                 break;

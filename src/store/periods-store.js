@@ -158,7 +158,7 @@ const PeriodsInit = () => {
         periodsArray.forEach((period) => {
           if (typeof period != "string") {
             // If this is a new period
-            if (!state.periods.hasOwnProperty(perriod.periodname)) {
+            if (!state.periods.hasOwnProperty(period.periodname)) {
               state.periods[period.periodname] = new Period(period.periodname);
               state.periods[period.periodname].last = period.last || new Date();
               changed = true;

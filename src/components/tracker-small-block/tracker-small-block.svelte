@@ -2,10 +2,13 @@
   import { createEventDispatcher } from "svelte";
   import NomieUOM from "../../utils/nomie-uom/nomie-uom";
   import { PeopleStore } from "../../store/people-store";
+  import { JournalsStore } from "../../store/journals-store";
   import Text from "../text/text.svelte";
   import Button from "../button/button.svelte";
   import Avatar from "../avatar/avatar.svelte";
   import Row from "../row/row.svelte";
+  import SvgIcon from '../icon/SvgIcon.svelte';
+  import {bellIcon, JournalIcon, userIcon} from '../icon/AppIcons.js' ;
   const dispatch = createEventDispatcher();
 
   export let element = undefined;
@@ -17,7 +20,8 @@
   export let novalue = false;
   export let className = "";
   // export let value = undefined;
-
+  
+ 
   let hasEmojiSlot = arguments[1].$$slots || {}.emoji;
   let avatarSize = 40;
 
@@ -32,6 +36,8 @@
     if (trackerElement.obj && trackerElement.obj.type == "picker") {
       return true;
     } else if (trackerElement.type == "person") {
+      return false;
+    } else if (trackerElement.type == "journal") {
       return false;
     } else if (trackerElement.obj && trackerElement.obj.type == "tick") {
       return false;
@@ -98,6 +104,16 @@
         {:else}
           <Avatar size={avatarSize} label={element.id} className="mr-2" />
         {/if}
+      {:else if element.type == 'journal'}
+        {#if $JournalsStore.journals[element.id]}
+          <SvgIcon 
+            d={JournalIcon} 
+            linefill={$JournalsStore.journals[element.id].journalcolor}
+            height={2*avatarSize} 
+            width={2*avatarSize}/>  
+        {:else}
+          <Avatar size={avatarSize} label={element.id} className="mr-2" />
+        {/if}  
       {/if}
       <div class="{truncate ? 'truncate' : ''} text-left w-100">
         <Text truncate size="sm">

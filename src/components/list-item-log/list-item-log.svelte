@@ -177,7 +177,7 @@
 
     <slot />
 
-    {#if logMeta.trackers.length || logMeta.people.length || logMeta.periods.length}
+    {#if logMeta.trackers.length || logMeta.people.length || logMeta.periods.length || logMeta.journals.length}
       <div class="tracker-grid n-row">
         {#each displayLog.people as person}
           <NTrackerSmallBlock
@@ -195,6 +195,15 @@
             value={undefined}
             on:click={() => {
               Interact.elementOptions(period);
+            }} />
+        {/each}
+        {#each displayLog.journals as journal}
+          <NTrackerSmallBlock
+            truncate={true}
+            element={journal}
+            value={undefined}
+            on:click={() => {
+              Interact.elementOptions(journal);
             }} />
         {/each}
         <!-- Interact.openStats(`@${person.id}`, displayLog.endDayjs());

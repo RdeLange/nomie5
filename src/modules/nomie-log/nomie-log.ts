@@ -30,6 +30,7 @@ export default class NLog {
   public trackers: Array<any>;
   public people: Array<any>;
   public periods: Array<any>;
+  public journals: Array<any>;
   public context: Array<any>;
 
   constructor(starter) {
@@ -190,6 +191,7 @@ export default class NLog {
       endDate: dayjs(this.end),
       people: trackableElements.filter((te) => te.type == "person"),
       periods: trackableElements.filter((te) => te.type == "period"),
+      journals: trackableElements.filter((te) => te.type == "journal"),
       context: trackableElements.filter((te) => te.type == "context"),
       trackers: trackableElements.filter((te) => te.type == "tracker"),
     });

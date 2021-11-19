@@ -125,6 +125,9 @@ const interactInit = () => {
     people: {
       active: null,
     },
+    journals: {
+      active: null,
+    },
     periods: {
       active: null,
       initialview: "check-in",
@@ -393,6 +396,12 @@ const interactInit = () => {
         return d;
       });
     },
+    journal(journalname) {
+      update((d) => {
+        d.journals.active = journalname;
+        return d;
+      });
+    },
     period(periodname,initialview) {
       update((d) => {
         d.periods.active = periodname;
@@ -522,6 +531,19 @@ const interactInit = () => {
             }
           },
         });
+      } else if (trackableElement.type == "journal") {
+        buttons.push({
+          icon: "userCircle",
+          divider: true,
+          title: `${Lang.t("journals.log-entry")}`,
+          click: () => {
+            Interact.closeOnThisDay();
+            Interact.journal(trackableElement.id);
+            if (options.callback) {
+              options.callback();
+            }
+          },
+        });  
       } else if (trackableElement.type == "period") {
         buttons.push({
           icon: "eye",
@@ -892,7 +914,9 @@ const interactInit = () => {
             s.prompt.cancel = `${Lang.t("general.cancel", "Cancel")}`;
             s.prompt.placeholder = options.placeholder || "";
             s.prompt.onInteract = (res) => {
-              resolve(s.prompt.value);
+              if (res != undefined) {resolve(s.prompt.value);}
+              else {resolve(null);}
+              
             };
             return s;
           });

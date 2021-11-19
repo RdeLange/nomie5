@@ -152,7 +152,7 @@
     "carbon-icons-svelte": "^10.9.3",
     "chart.js": "^2.9.4",
     "chartjs-plugin-annotation": "^0.5.7",
-    "nomie-utils": "^0.1.10",
+    "nomie-utils-r": "^0.1.12-r1",
     "postcss": "^8.2.15",
     "pouchdb": "^7.1.1",
     "rollup-plugin-postcss": "^4.0.0",

@@ -1,5 +1,5 @@
 <script>
-  import { tokenize } from "nomie-utils";
+  import { tokenize } from "nomie-utils-r";
 
   export let str = undefined;
   export let titleClass = "";

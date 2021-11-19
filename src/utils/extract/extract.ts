@@ -1,7 +1,7 @@
 import TrackableElement from "../../modules/trackable-element/trackable-element";
 import snakeCase from "../snake-case/snake-case";
 
-import { tokenize } from "nomie-utils";
+import { tokenize } from "nomie-utils-r";
 
 declare var window: any;
 window.tokenize = tokenize;
@@ -48,6 +48,9 @@ function generateRaw(str = "", type = "generic") {
     case "person":
       return `@${str}`;
       break;
+    case "journal":
+      return `§${str}`;
+      break;  
     case "period":
       return `~${str}`;
       break;  
@@ -67,6 +70,11 @@ export default {
   people(str) {
     return parse(str).filter((trackableElement) => {
       return trackableElement.type == "person";
+    });
+  },
+  journals(str) {
+    return parse(str).filter((trackableElement) => {
+      return trackableElement.type == "journal";
     });
   },
   periods(str) {

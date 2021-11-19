@@ -28,7 +28,7 @@
         let tag: string = searchTerm.term.replace("#", "");
         return $TrackerStore.trackers[tag] || new TrackerConfig({ tag });
       });
-    } else if ($SearchStore.view === "people") {
+    } else if ($SearchStore.view === "people" || $SearchStore.view === "journals") {
     }
 
     savedTerms = savedTerms;

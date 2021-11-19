@@ -5,7 +5,7 @@ export interface IPeriod {
   start: Date;
   end: Date;
   last: Date;
-  notes: string;
+  notes: string; 
   periodcolor: string;
 }
 

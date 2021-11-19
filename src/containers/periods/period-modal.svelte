@@ -36,11 +36,13 @@
   let domVisible = false;
   let activePeriod;
   let lastActivePeriodKey;
+ 
+
   
-  $: if (activePeriod) {
-    startdate = dayjs(activePeriod.start);
-    enddate = dayjs(activePeriod.end);
-  }
+ // $: if (activePeriod) {
+ //   startdate = dayjs(activePeriod.start);
+ //   enddate = dayjs(activePeriod.end);
+ // }
 
   $: if (
     $Interact.periods.active &&

@@ -4,7 +4,7 @@
 
 <style>
   svg {
-    fill: var(--color-primary-bright);
+    fill: var(--color-primary-bright); 
   }
 </style>
 

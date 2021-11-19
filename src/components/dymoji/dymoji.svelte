@@ -9,6 +9,7 @@ import PeriodModal from "../../containers/periods/period-modal.svelte";
   export let icon = undefined;
   export let person = undefined;
   export let period = undefined;
+  export let journal = undefined;
   export let size = 42;
   export let radius = 0.12;
   export let color = "#ffffff";

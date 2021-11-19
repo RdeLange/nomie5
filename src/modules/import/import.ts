@@ -8,6 +8,7 @@ import { N3ImportNormalizer } from "./import.n3";
 import { N5ImportNormalizer } from "./import.n5";
 import type { IPerson } from "../person/person";
 import type { IPeriod } from "../period/period";
+import type { IJournal } from "../journal/journal";
 
 // import type { ILocation } from "../locate/Location";
 
@@ -23,12 +24,17 @@ export interface IPeriods {
   [key: string]: IPeriod;
 }
 
+export interface IJournals {
+  [key: string]: IJournal;
+}
+
 export interface INormalizedImport {
   trackers?: ITrackers;
   boards?: Array<any>;
   context?: Array<string>;
   people?: IPeople;
   periods?: IPeriods;
+  journals?: IJournals;
   locations?: Array<Location>;
   dashboards?: Array<Dashboard>;
   logs?: Array<NLog>;

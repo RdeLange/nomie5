@@ -20,6 +20,9 @@ const NPaths = {
     periods() {
       return `/periods`;
     },
+    journals() {
+      return `/journals`;
+    },
     settings() {
       return "/settings";
     },

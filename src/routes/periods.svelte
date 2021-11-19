@@ -128,7 +128,7 @@
       {/if}
 
       <div class="trackers n-grid">
-        {#each state.periods as period, index (index)}
+        {#each state.periods as period, index (index)} 
           <ListPeriodItem
             period={$PeriodsStore.periods[period]}
             on:click={() => {

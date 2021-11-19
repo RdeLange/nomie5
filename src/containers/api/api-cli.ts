@@ -236,6 +236,7 @@ export default class NomieAPICli {
   async register(): Promise<NomieAPICli> {
     let payload = await this.post("/register");
     if (payload.success) {
+      console.log(payload);
       this.keyLocker.apiKey = payload.results.apiKey;
       this.keyLocker.privateKey = payload.results.privateKey;
       this.setConfig({
@@ -256,6 +257,7 @@ export default class NomieAPICli {
    *
    */
   async destory():Promise<boolean> {
+    console.log(this.keyLocker.asAuth);
     let payload = await this.post("/unregister", {}, this.keyLocker.asAuth);
     if (payload.success) {
       return true

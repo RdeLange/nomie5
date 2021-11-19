@@ -179,6 +179,6 @@
 
 {#if icons[name]}
   <span class="n-icon n-icon-{name} {className}" {style} aria-label={title}>
-    <svelte:component this={icons[name]} size={`${size || 24}`} />
+    <svelte:component this={icons[name]} size={`${size || 24}`}/>
   </span>
 {/if}

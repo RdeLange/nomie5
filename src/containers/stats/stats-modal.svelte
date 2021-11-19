@@ -106,7 +106,7 @@
    * Its a class because it's getting bit and complicated
    * **/
   class StatsModalState {
-    public currentTerm: any = null; // what's the search term @person #tracker +context
+    public currentTerm: any = null; // what's the search term @person §journal #tracker +context
     public currentColor: string = "#444"; // Default color
     public date: Dayjs; // Setup the date
     public timeSpan: string;
@@ -247,6 +247,9 @@
       case "person":
         response = `@${text}`;
         break;
+      case "journal":
+        response = `§${text}`;
+        break;  
       case "context":
         response = `+${text}`;
         break;
@@ -314,7 +317,9 @@
             Interact.editTracker(TrackerStore.byTag(state.trackableElement.id));
           } else if (state.trackableElement.type == "person") {
             Interact.person(state.trackableElement.id);
-          }
+          } else if (state.trackableElement.type == "journal") {
+            Interact.journal(state.trackableElement.id);
+          }  
         },
       },
       {
@@ -551,7 +556,7 @@
     state.viewOption = getDataViewButtons();
     // Get trackable element from the latest term
     state.trackableElement = extractor.toElement(state.currentTerm);
-    // Get Tracker - make a fake one if a person, or context
+    // Get Tracker - make a fake one if a person, journal or context
     state.tracker = TrackerStore.byTag(state.trackableElement.id);
     state.currentColor = state.tracker.color;
     getStats();

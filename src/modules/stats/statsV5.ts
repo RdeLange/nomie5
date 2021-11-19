@@ -340,8 +340,8 @@ export default class StatsProcessor implements IStats {
       if (acceptableDates.indexOf(unitKey) > -1) {
         valueMap[unitKey] = valueMap[unitKey] || [];
 
-        // If it's a person or context, just count 1
-        if (this.trackableElement.type == "person" || this.trackableElement.type == "context") {
+        // If it's a person, journal or context, just count 1
+        if (this.trackableElement.type == "person" || this.trackableElement.type == "context" || this.trackableElement.type == "journal") {
           valueMap[unitKey].push(1);
         } else {
           // It's a tracker
@@ -401,6 +401,7 @@ export default class StatsProcessor implements IStats {
   getRelated(overrideRows?: Array<NLog>) {
     let rows = overrideRows || this.rows;
     let people = {};
+    let journals = {};
     let context = {};
     let tags = {};
 
@@ -415,6 +416,10 @@ export default class StatsProcessor implements IStats {
       row.people.forEach((personElement) => {
         people[personElement.id] = people[personElement.id] || 0;
         people[personElement.id]++;
+      });
+      row.journals.forEach((journalElement) => {
+        journals[journalElement.id] = journals[journalElement.id] || 0;
+        journals[journalElement.id]++;
       });
       row.context.forEach((contextElement) => {
         context[contextElement.id] = context[contextElement.id] || 0;
@@ -434,10 +439,11 @@ export default class StatsProcessor implements IStats {
     };
 
     let peopleArr = returnMap(people, "person", "@");
+    let journalsArr = returnMap(journals, "journal", "§");
     let tagArr = returnMap(tags, "tracker", "#");
     let contextArr = returnMap(context, "context", "+");
 
-    let relatedArr = [...peopleArr, ...tagArr, ...contextArr].sort((a, b) => {
+    let relatedArr = [...peopleArr, ...journalsArr, ...tagArr, ...contextArr].sort((a, b) => {
       return a.count < b.count ? 1 : -1;
     });
 

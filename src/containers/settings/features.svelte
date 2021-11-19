@@ -79,19 +79,6 @@
 <div class="n-list my-2 py-2 features">
   <ListItem
     className="py-2"
-    title={Lang.t('settings.feature-people-tracking', 'People Tracking')}
-    description={Lang.t('settings.feature-people-description', 'Keep track of those you interact with the most')}>
-    <div slot="right" class="pl-2">
-      <ToggleSwitch
-        value={$FeatureStore.people}
-        on:change={(change) => {
-          FeatureStore.toggle('people', change.detail);
-        }} />
-    </div>
-  </ListItem>
-  <hr class="divider center" />
-  <ListItem
-    className="py-2"
     title={Lang.t('settings.feature-dashboard', 'Personal Dashboard')}
     description={Lang.t('settings.feature-dashboard-description', 'A dedicated tab for creating custom views of your data')}>
     <div slot="right" class="ml-2">
@@ -99,6 +86,19 @@
         value={$FeatureStore.dashboard}
         on:change={(change) => {
           FeatureStore.toggle('dashboard', change.detail);
+        }} />
+    </div>
+  </ListItem>
+  <hr class="divider center" />
+  <ListItem
+    className="py-2"
+    title={Lang.t('settings.feature-people-tracking', 'People Tracking')}
+    description={Lang.t('settings.feature-people-description', 'Keep track of those you interact with the most')}>
+    <div slot="right" class="pl-2">
+      <ToggleSwitch
+        value={$FeatureStore.people}
+        on:change={(change) => {
+          FeatureStore.toggle('people', change.detail);
         }} />
     </div>
   </ListItem>
@@ -111,6 +111,18 @@
         value={$FeatureStore.periods}
         on:change={(change) => {
           FeatureStore.toggle('periods', change.detail);
+        }} />
+    </div>
+  </ListItem>
+  <ListItem
+    className="py-2"
+    title={Lang.t('settings.feature-journals-tracking', 'Journals Tracking')}
+    description={Lang.t('settings.feature-journals-description', 'Keep track of your journals')}>
+    <div slot="right" class="pl-2">
+      <ToggleSwitch
+        value={$FeatureStore.journals}
+        on:change={(change) => {
+          FeatureStore.toggle('journals', change.detail);
         }} />
     </div>
   </ListItem>

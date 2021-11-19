@@ -154,7 +154,7 @@
           &nbsp; {activePerson.getDisplayName()}
         </div>
       </div>
-      <div slot="right">
+      <div slot="right"> 
         <Button
           icon
           on:click={() => {

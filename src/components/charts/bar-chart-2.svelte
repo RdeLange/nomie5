@@ -1,7 +1,7 @@
 <script type="ts">
   import { createEventDispatcher, onMount } from "svelte";
   const dispatch = createEventDispatcher();
-
+  import _ from "lodash";
   import Chart from "chart.js";
   import NIcon from "../icon/icon.svelte";
   import nid from "../../modules/nid/nid";
