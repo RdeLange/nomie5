@@ -28,7 +28,11 @@ import { Lang } from "../../store/lang";
 
 // const console = new Logger("🚦 Nomie API");
 // Todo consider making this configurable
-const NAPI = new APIClient({ domain: "nomieapi.com/.netlify/functions" });
+//const NAPI = new APIClient({ domain: "192.168.178.100:1661" });
+//const NAPI = new APIClient({ domain: "localhost:3000" });
+//const NAPI = new APIClient({ domain: "nomieapi.com" });
+const NAPI = new APIClient({ domain: "s4eapi.casadelange.myds.me" });
+
 
 export interface MassNapiLogImport {
   // success:Array<{nLog:any, log:NapiLog}>;
@@ -50,6 +54,7 @@ export interface NapiLog {
 
 // Store State Type
 interface ApiStateConfig {
+  domainName?: string | undefined;
   registered?: boolean;
   apiKey?: string | undefined;
   privateKey?: string | undefined;
@@ -76,6 +81,7 @@ const createApiStore = () => {
   const _state: ApiStateConfig = {
     deviceDisabled: !canApiRunOnDevice(),
     registered: undefined,
+    domainName: null,
     apiKey: null,
     privateKey: null,
     autoImport: false,
@@ -148,13 +154,15 @@ const createApiStore = () => {
         const state = fuse(
           isRegistered
             ? {
-                registered: true,
+              registered: true,
+              domainName: NAPI.domain,
                 apiKey: NAPI.keyLocker.apiKey,
                 privateKey: NAPI.keyLocker.privateKey,
                 autoImport: ApiLogStore.get("auto-import") ? true : false,
               }
             : {
                 registered: false,
+                domainName: undefined,
                 apiKey: undefined,
                 privateKey: undefined,
                 autoImport: false,
@@ -285,6 +293,8 @@ const createApiStore = () => {
         return false;
       }
     },
+    
+
     async getLogs(): Promise<Array<NapiLog>> {
       // Get logs from API
       let logs: Array<NapiLog> = await NAPI.logs();
@@ -302,7 +312,7 @@ const createApiStore = () => {
           stored.push(log);
         }
       });
-
+      
       // Save to Storage
       setArchives(stored);
       // Update State so UI can react
@@ -335,17 +345,20 @@ const createApiStore = () => {
           const apiKey = prompt(`API Key`);
           // Ask for Private key
           const privateKey = prompt("Private Key");
+          // Ask for Domain
+          const domain = prompt("API Server Address");
           // If we are missing either - rerun this method again
-          if (!privateKey || !apiKey) {
+          if (!privateKey || !apiKey || !domain) {
             methods.restoreKeys();
           } else {
             // Test if the combo is valid 
+            NAPI.domain = domain.toString();
             const test = await NAPI.testAndSave(apiKey, privateKey);
             if (test === true) {
               methods.init();
-              Interact.alert(Lang.t('general.success','Success!'), `👍  API Successfully Restored`);
+              Interact.alert(Lang.t('general.success','Success!'), `👍  API Successfully Restored on `+domain);
             } else {
-              Interact.error("Unable to verify that API Key and Private Key combination");
+              Interact.error("Unable to verify that API Key and Private Key combination on api server "+domain);
             }
           }
         } catch (e) {
@@ -455,34 +468,47 @@ const createApiStore = () => {
       // return the error, success arrays
       return results;
     },
+    
+    async changeDomain() {
+      this.destroy();
+      this.register();
+    },
+
     /**
      * Register for a New API Key
      */
     async register() {
       // Notify user we're generating
-      fuse({ generating: true });
-      try {
-        // Get new API key and private key
-        const registered = await NAPI.register();
-        // If we're good 
-        if (registered) {
-          fuse({
-            generating: false,
-            registered: true,
-            privateKey: NAPI.keyLocker.privateKey,
-            apiKey: NAPI.keyLocker.apiKey,
-          });
-        } else {
-          // Something bad happened
-          Interact.error("An unknown error occured while registering.");
-          console.error(registered);
-        }
-      } catch (e) {
-        // Something really bad happened
-        Interact.error(e.message);
-        fuse({ generating: false });
-        console.error(e);
-      }
+      let domainname = await Interact.prompt("Which Server","on which APi Server do you want to register?");
+      if (domainname){
+        NAPI.domain = domainname.toString();
+        fuse({ generating: true });
+        try {
+          // Get new API key and private key
+          const registered = await NAPI.register();
+          // If we're good 
+          if (registered) {
+            fuse({
+              generating: false,
+              registered: true,
+              privateKey: NAPI.keyLocker.privateKey,
+              apiKey: NAPI.keyLocker.apiKey,
+              domainName: NAPI.domain,
+            });
+          } else {
+            // Something bad happened
+            Interact.error("An unknown error occured while registering.");
+            console.error(registered);
+          }
+        } catch (e) {
+          // Something really bad happened
+          Interact.error(e.message);
+          fuse({ generating: false });
+          console.error(e);
+        }}
+      else { // No domain given
+        Interact.error("Please provide a API Server address.");
+        }  
     },
     /**
      * 

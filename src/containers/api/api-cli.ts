@@ -52,6 +52,7 @@ export default class NomieAPICli {
         // Set Keylocker API Private Keys
         this.keyLocker.apiKey = config.apiKey || config.api_key;
         this.keyLocker.privateKey = config.privateKey || config.private_key;
+        if (config.domain) {this.domain = config.domain}
         // we're ready!
         this.ready = true;
         this.fireReady(); // !fire off ready to listeners
@@ -87,12 +88,15 @@ export default class NomieAPICli {
   }
 
   baseUrl(): string {
-    return this.domain.search("localhost") > -1 ? `http://${this.domain}` : `https://${this.domain}`;
+    
+    return this.domain.search("192.168.178.100") > -1 ? `http://${this.domain}` : `https://${this.domain}`;
   }
 
   isRegistered(): boolean {
     return this.keyLocker.apiKey && this.keyLocker.privateKey ? true : false;
   }
+
+  
 
   /**
    * Post to the API
@@ -118,7 +122,7 @@ export default class NomieAPICli {
     });
     // Get Payload back
     let cbPayload = await results.json();
-    // The key is no longer valid
+     // The key is no longer valid
     if (cbPayload.results.destroy) {
       throw new Error('Server is saying that is an invalid api/private key combo.');
       // await this.clearConfig();
@@ -140,7 +144,7 @@ export default class NomieAPICli {
     let success: boolean;
     this.keyLocker.apiKey = apiKey;
     this.keyLocker.privateKey = privateKey;
-    let response = await this.post("/logs", {}, this.keyLocker.asAuth);
+    let response = await this.post("/logs", {key:this.keyLocker.asAuth}, this.keyLocker.asAuth);
     success = response.success;
     return success;
   }
@@ -166,7 +170,9 @@ export default class NomieAPICli {
 
   // Get Logs
   async logs(): Promise<Array<NapiLog>> {
-    const payload = await this.post("/logs", {}, this.keyLocker.asAuth);
+    
+    const payload = await this.post("/logs", {key:this.keyLocker.asAuth}, this.keyLocker.asAuth);
+    
     if (payload.success) {
       return payload.results;
     } else {
@@ -187,7 +193,7 @@ export default class NomieAPICli {
    * This will clear out the slots of any remaining API logs on the server
    */
   async clear() {
-    let payload = await this.post("/clear", {}, this.keyLocker.asAuth);
+    let payload = await this.post("/clear", {key:this.keyLocker.asAuth}, this.keyLocker.asAuth);
     if (payload.success) {
       return payload.results;
     } else {
@@ -213,7 +219,10 @@ export default class NomieAPICli {
     try {
       this.keyLocker.apiKey = config.apiKey || this.keyLocker.apiKey;
       this.keyLocker.privateKey = config.privateKey || this.keyLocker.privateKey;
-      return await Storage.put(NAPI_STORE_PATH, this.keyLocker.asObject);
+      let configuration = this.keyLocker.asObject;
+      configuration.domain = this.domain;
+
+      return await Storage.put(NAPI_STORE_PATH, configuration);
     } catch (e) {
       alert(e.message);
       console.error("Set Config error", e, config);
@@ -226,9 +235,11 @@ export default class NomieAPICli {
    * @param privateKey 
    */
   async saveKeys(apiKey: string, privateKey: string) {
-    this.setConfig({ apiKey: apiKey, privateKey });
+    this.setConfig({ apiKey: apiKey, privateKey: privateKey });
     return true;
   }
+
+  
 
   /**
    * Register for an API Key
@@ -236,7 +247,6 @@ export default class NomieAPICli {
   async register(): Promise<NomieAPICli> {
     let payload = await this.post("/register");
     if (payload.success) {
-      console.log(payload);
       this.keyLocker.apiKey = payload.results.apiKey;
       this.keyLocker.privateKey = payload.results.privateKey;
       this.setConfig({
@@ -250,6 +260,7 @@ export default class NomieAPICli {
     }
   }
 
+
   /**
    *
    * Unregister
@@ -257,8 +268,7 @@ export default class NomieAPICli {
    *
    */
   async destory():Promise<boolean> {
-    console.log(this.keyLocker.asAuth);
-    let payload = await this.post("/unregister", {}, this.keyLocker.asAuth);
+    let payload = await this.post("/unregister", {key:this.keyLocker.asAuth}, this.keyLocker.asAuth);
     if (payload.success) {
       return true
     } else {

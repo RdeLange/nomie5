@@ -61,10 +61,12 @@
     <Divider pad>
       🟢
       <span class="mr-2" />
-      Registered and Valid
+      Registered and Valid on {$ApiStore.domainName}
     </Divider>
-
+    
     <List className="app-contain-sm mb-4">
+      
+      <Divider inset />
       <Input
         listItem
         type="text"
@@ -209,7 +211,7 @@
           percentage={math.percentage(10, $ApiStore.inAPI.length)}
           color={$ApiStore.inAPI.length >= 9 ? 'red' : 'primary'} />
         <Text size="xs" faded className="pt-1 text-center">
-          Stored on nomieapi.com
+          Stored on {$ApiStore.domainName}
         </Text>
       </div>
     </ListItem>
@@ -250,11 +252,11 @@
         clickable
         on:click={ApiStore.forget}
         className="text-primary-500">
-        Forget API on ALL Devices
+        Forget API on ALL Devices  / Change API Server
       </ListItem>
       <Divider inset />
       <ListItem clickable on:click={ApiStore.destroy} className="text-red-500">
-        Destory API Key
+        Destory API Key / Change API Server
       </ListItem>
 
     </List>

@@ -41,7 +41,11 @@
   import math from "../utils/math/math";
   import Icon from "../components/icon/icon.svelte";
 
-  let NAPI = new NomieAPICli({ domain: "nomieapi.com" });
+  //let NAPI = new NomieAPICli({ domain: "192.168.178.100:1661" });
+  // let NAPI = new NomieAPICli({ domain: "localhost:3000" });
+  // let NAPI = new NomieAPICli({ domain: "nomieapi.com" });
+  let NAPI = new NomieAPICli({ domain: "s4eapi.casadelange.myds.me" });
+  
 
   let state = {
     registered: false,
@@ -275,10 +279,10 @@
         </NItem>
         <NItem>
           <div slot="left">
-            <Text>{$NomieAPI.inAPI.length}/10</Text>
+            <Text>{$NomieAPI.inAPI.length}/100</Text>
           </div>
           <div>
-            <ProgressBar percentage={math.percentage(10,$NomieAPI.inAPI.length)} />
+            <ProgressBar percentage={math.percentage(100,$NomieAPI.inAPI.length)} />
             <Text size="xs" faded className="pt-1 text-center">Stored on nomieapi.com</Text>
           </div>
           <div slot="right">
