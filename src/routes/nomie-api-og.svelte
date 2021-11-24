@@ -41,10 +41,7 @@
   import math from "../utils/math/math";
   import Icon from "../components/icon/icon.svelte";
 
-  //let NAPI = new NomieAPICli({ domain: "192.168.178.100:1661" });
-  // let NAPI = new NomieAPICli({ domain: "localhost:3000" });
-  // let NAPI = new NomieAPICli({ domain: "nomieapi.com" });
-  let NAPI = new NomieAPICli({ domain: "s4eapi.casadelange.myds.me" });
+  let NAPI = new NomieAPICli({ domain: "nomieapi.com" });
   
 
   let state = {

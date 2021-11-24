@@ -89,7 +89,7 @@ export default class NomieAPICli {
 
   baseUrl(): string {
     
-    return this.domain.search("192.168.178.100") > -1 ? `http://${this.domain}` : `https://${this.domain}`;
+    return this.domain.search("localhost") > -1 ? `http://${this.domain}` : `https://${this.domain}`;
   }
 
   isRegistered(): boolean {

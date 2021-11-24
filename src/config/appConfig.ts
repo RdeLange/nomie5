@@ -19,10 +19,7 @@ export default {
   support_contact: "Email Brandon",
   patreon: "https://www.patreon.com/bePatron?u=40136531",
   patreonHome: "https://www.patreon.com/nomieapp",
-  // api: "nomieapi.com",
-  // api: "192.168.178.100:1661",
- // api: "localhost:3000",
-  api: "s4eapi.casadelange.myds.me",
+  api: "nomieapi.com",
   positivity: [
     { emoji: "😡", score: -2 },
     { emoji: "👎", score: -1 },

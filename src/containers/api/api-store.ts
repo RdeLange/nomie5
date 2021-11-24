@@ -28,10 +28,7 @@ import { Lang } from "../../store/lang";
 
 // const console = new Logger("🚦 Nomie API");
 // Todo consider making this configurable
-//const NAPI = new APIClient({ domain: "192.168.178.100:1661" });
-//const NAPI = new APIClient({ domain: "localhost:3000" });
-//const NAPI = new APIClient({ domain: "nomieapi.com" });
-const NAPI = new APIClient({ domain: "s4eapi.casadelange.myds.me" });
+const NAPI = new APIClient({ domain: "nomieapi.com" });
 
 
 export interface MassNapiLogImport {
