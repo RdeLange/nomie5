@@ -210,7 +210,6 @@
     <Spinner />
   </div>
 {/if}
-
 <!-- Global Modals, alerts, menus, etc-->
 {#if ready && $Interact.stats.terms.length}
   <StatsModal />
@@ -228,8 +227,7 @@
   <PeriodModal 
   initialview = {$Interact.periods.initialview}/>
 {/if}
-{#if $Interact.blocker.show}
-  <div id="ui-blocker" class="full-screen bg-translucent n-panel center-all">
+{#if $Interact.blocker.show}<div id="ui-blocker" class="full-screen bg-translucent n-panel center-all">
     <div style="min-width:200px;">
       <div class="my-3 ml-2 text-center text-white">
         {#if !$Interact.blocker.percent}

@@ -123,6 +123,8 @@ export interface WidgetConfig {
   secStats1?: any;
   secStats2?: any;
   showperiods?:boolean;
+  wctheme?: string;
+  filters?: any;
 }
 
 export class Widget {
@@ -153,6 +155,8 @@ export class Widget {
   public secStats1?: any;
   public secStats2?: any;
   public showperiods?: boolean = false;
+  public wctheme?: string = "persons";
+  public filters?: any;
 
   constructor(payload?: WidgetConfig) {
     payload = payload || {};
@@ -190,6 +194,10 @@ export class Widget {
     if (payload.secElement2) {
       this.secElement2 = new TrackableElement({ id: payload.secElement2.id, type: payload.secElement2.type });
     }
+    if (payload.wctheme) {
+      this.wctheme = payload.wctheme}
+    if (payload.filters) {
+      this.filters = payload.filters}
   }
 
   getColor(): string {

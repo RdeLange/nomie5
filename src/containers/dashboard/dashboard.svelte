@@ -2,7 +2,7 @@
   import { navigate, Router, Route } from "svelte-routing";
   import { onMount, onDestroy } from "svelte";
 
-  import dayjs from "dayjs";
+  import dayjs from "dayjs"; 
   import type { Dayjs } from "dayjs";
 
   import WidgetEle from "./widget.svelte";
@@ -766,6 +766,10 @@
     }
   }
 
+  function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+  } 
+
   onDestroy(() => {
     unsubTrackers();
     unsubPeople();
@@ -963,6 +967,8 @@
             </div>
             {#if item.type == "text"}
               <Text size="md" truncate>{item.description}</Text>
+            {:else if item.type == "wordcloud"}  
+              <Text size="md" truncate>☁️ {capitalizeFirstLetter(item.wctheme)}</Text>
             {:else}
               <TrackerSmallBlock
                 xs

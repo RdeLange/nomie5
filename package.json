@@ -70,9 +70,8 @@
     "boolean-parser": "0.0.2",
     "commitizen": "^4.2.4",
     "commitlint": "^9.1.2",
-    "concurrently": "^5.2.0",
     "copy": "^0.3.2",
-    "d3-scale": "^3.2.1",
+    "d3-scale": "^3.3.0",
     "dayjs": "^1.8.30",
     "dom-to-image-chrome-fix": "^2.6.0",
     "dom-to-image-more": "^2.8.0",
@@ -152,11 +151,13 @@
     "carbon-icons-svelte": "^10.9.3",
     "chart.js": "^2.9.4",
     "chartjs-plugin-annotation": "^0.5.7",
+    "concurrently": "^6.4.0",
     "nomie-utils-r": "^0.1.12-r1",
     "postcss": "^8.2.15",
     "pouchdb": "^7.1.1",
     "rollup-plugin-postcss": "^4.0.0",
-    "sortablejs": "^1.10.2"
+    "sortablejs": "^1.10.2",
+    "svelte-select": "^4.4.6"
   },
   "license": "MIT"
 }

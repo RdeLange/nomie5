@@ -10,6 +10,7 @@
   import statUtils from "./bar-chart-2-stat-utils";
   import additionalDatasets from "./bar-chart-2-additional-datasets";
   import { PeriodsStore } from "../../store/periods-store";
+  import * as ChartAnnotation from 'chartjs-plugin-annotation';
 
   //Chart.register(annotationPlugin);
   export let showperiods: boolean = false;
@@ -150,6 +151,7 @@
     for (let i = 0; i < periods.length; i++) {
       allperiods.push($PeriodsStore.periods[periods[i]]);
     }
+    
     createAnnotations();
   }
 
@@ -198,6 +200,7 @@
               },
             });   
     }
+    
     
   }
 
@@ -312,6 +315,7 @@
     
     const chartConfig = {
       type,
+      plugins: [ChartAnnotation],
       options: {
         animation: {
           duration: 0, // general animation time

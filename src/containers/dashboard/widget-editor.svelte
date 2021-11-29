@@ -24,6 +24,9 @@
   import { Lang } from "../../store/lang";
   import dayjs from "dayjs";
  // import { Dayjs } from "dayjs";
+  import Select from 'svelte-select';
+  import { JournalsStore } from "../../store/journals-store";
+  import { wordcloudtemplates } from "./widgets/widget-wordcloud-templates";
 
   export let value: Widget = null;
 
@@ -44,7 +47,18 @@
   let periodMargin = "0";
   let lastperiodMargin;
   let periods = [];
-  
+  let journals = [];
+  let journallist = [];
+  let themelist = [];
+
+  let filteritems = [
+    {value: 'chocolate', label: 'Chocolate'},
+    {value: 'pizza', label: 'Pizza'},
+    {value: 'cake', label: 'Cake'},
+    {value: 'chips', label: 'Chips'},
+    {value: 'ice-cream', label: 'Ice Cream'},
+  ];
+
   $: if (widgetTypeId) {
     widgetType = widgetTypes.find(
       (widgetType) => widgetType.id == widgetTypeId
@@ -75,26 +89,29 @@
               value.includeAvg = false;}
             if (value.timeRange.id == "custom") {
               value.timeRange.label = "Period: "+dayjs(customStart).format('DD-MM-YYYY')+" - "+dayjs(customEnd).format('DD-MM-YYYY');
-              value.timeRange.start.date = customStart;
-              value.timeRange.end.date = customEnd;
+              value.timeRange.start.date = dayjs(customStart);
+              value.timeRange.end.date = dayjs(customEnd);
               customShow = true;}
             else {customShow = false;}  
-            if (value.timeRange.id == "period") {
+            if (value.timeRange.id == "period" && periods.length >0) {
               periodShow = true;}
-            else {periodShow = false;}  
+            else {
+              periodShow = false;}  
          }
          else {
             value.secondairyTimeRange = new WidgetTimeFrame(timeFrame);
             
             if (value.secondairyTimeRange.id == "custom") {
               value.secondairyTimeRange.label = "Period: "+dayjs(customStart).format('DD-MM-YYYY')+" - "+dayjs(customEnd).format('DD-MM-YYYY');
-              value.secondairyTimeRange.start.date = customStart;
-              value.secondairyTimeRange.end.date = customEnd;
+              value.secondairyTimeRange.start.date = dayjs(customStart);
+              value.secondairyTimeRange.end.date = dayjs(customEnd);
               customShow = true;}
             else {customShow = false;}  
-            if (value.secondairyTimeRange.id == "period") {
+            if (value.secondairyTimeRange.id == "period" && periods.length >0) {
               periodShow = true;}
-            else {periodShow = false;}  
+            else {
+              periodShow = false;
+              }  
          }
 
       }
@@ -103,13 +120,13 @@
   $: if (customStart || customEnd) {
     if (customShow) {
       if (!value.adbTimeRangeEnabled){
-        value.timeRange.start.date = customStart;
-        value.timeRange.end.date = customEnd;
+        value.timeRange.start.date = dayjs(customStart);
+        value.timeRange.end.date = dayjs(customEnd);
         value.timeRange.label = "Period: "+dayjs(customStart).format('DD-MM-YYYY')+" - "+dayjs(customEnd).format('DD-MM-YYYY');
       }
       else{
-        value.secondairyTimeRange.start.date = customStart;
-        value.secondairyTimeRange.end.date = customEnd;
+        value.secondairyTimeRange.start.date = dayjs(customStart);
+        value.secondairyTimeRange.end.date = dayjs(customEnd);
         value.secondairyTimeRange.label = "Period: "+dayjs(customStart).format('DD-MM-YYYY')+" - "+dayjs(customEnd).format('DD-MM-YYYY');
       }
     }
@@ -187,6 +204,32 @@
     // The $PeriodsStore.periods is a map - periodname is the key
     
       return Object.keys(($PeriodsStore || {}).periods || {});
+    
+  }
+
+  function loadThemes() {
+    for (const theme of wordcloudtemplates){
+      themelist.push({value: theme.wordcloudname,label:theme.displayName})
+    }
+    
+    console.log("check")
+  }
+
+  function loadJournals() {
+    
+    journals = getJournals().sort((a, b) => {
+      return $JournalsStore.journals[a].last < $JournalsStore.journals[b].last ? 1 : -1;
+    });
+    
+    for (const journal of journals){
+      journallist.push({value: $JournalsStore.journals[journal].journalname, label: $JournalsStore.journals[journal].displayName});
+    }
+
+  }
+
+  function getJournals() {
+    
+      return Object.keys(($JournalsStore || {}).journals || {});
     
   }
 
@@ -393,6 +436,8 @@
 
   onMount(() => {
     loadPeriods();
+    loadJournals();
+    loadThemes();
     if (value) {
       if (!value.adbTimeRangeEnabled) {
         if (value.timeRange) {
@@ -402,12 +447,13 @@
               customEnd = value.timeRange.end.date;
               customShow = true;
             }
-            if (value.timeRange.id == "period") {
+            if (value.timeRange.id == "period" && periods.length >0) {
               periodShow = true;
               periodPick = value.timeRange.label;
               let pickedperiod = PeriodsStore.get(periodPick);
               periodMargin = (Math.round(100*((((((dayjs(value.timeRange.start.date).diff(dayjs(value.timeRange.end.date))))/(pickedperiod.end.valueOf()-pickedperiod.start.valueOf())) *-1)-1)/2))).toString();
             }
+            
           }
           if (value.compareValue) {
             conditionalStyling = true;
@@ -427,12 +473,13 @@
               customEnd = value.secondairyTimeRange.end.date;
               customShow = true;
             }
-            if (value.secondairyTimeRange.id == "period") {
+            if (value.secondairyTimeRange.id == "period" && periods.length >0) {
               periodShow = true;
               periodPick = value.secondairyTimeRange.label;
               let pickedperiod = PeriodsStore.get(periodPick);
               periodMargin = (Math.round(100*((((((dayjs(value.secondairyTimeRange.start.date).diff(dayjs(value.secondairyTimeRange.end.date))))/(pickedperiod.end.valueOf()-pickedperiod.start.valueOf())) *-1)-1)/2))).toString();
             }
+            
           }
           if (value.compareValue) {
             conditionalStyling = true;
@@ -446,6 +493,8 @@
   }
   });
 </script>
+
+
 
 <div class="dashwidget-editor">
   <div class="p-2 widget-top bg-solid">
@@ -579,6 +628,21 @@
             />
           </ListItem>
         {/if}
+        
+        {#if widgetType && [...widgetType.requires, ...widgetType.optional].indexOf("filter") > -1}
+        <div class="themed">
+          <Text>Filter specific Journals</Text>
+          <ListItem className="p-0" bg="transparent">
+            <Select 
+            showChevron={true} 
+            items={journallist} 
+            bind:value={value.filters} 
+            isMulti={true} 
+            placeholder="Filter Journals....">
+            </Select>
+          </ListItem>
+        </div> 
+        {/if}
         {#if widgetType && [...widgetType.requires, ...widgetType.optional].indexOf("timeframe") > -1}
           <ListItem className="p-0" bg="transparent">
             <Input bind:value={dateType} type="select" label="Timeframe">
@@ -637,6 +701,19 @@
             <option value="lg">Large</option>
           </Input>
         </ListItem>
+        {#if widgetTypeId == "wordcloud"}
+        <ListItem bg="transparent" className="p-0">
+          <Input
+            type="select"
+            label="Wordcloud Theme"
+            bind:value={value.wctheme}
+          >
+            {#each themelist as theme, index (index)}
+                  <option value={theme.value}>{theme.label}</option>
+            {/each} 
+          </Input>
+        </ListItem>
+        {/if}
         {#if widgetTypeId == "barchart" || widgetTypeId == "linechart"}
           <ListItem bg="transparent" className="p-0">
             <Input
@@ -785,5 +862,16 @@
     padding: 16px;
     border-bottom-left-radius: 16px;
     border-bottom-right-radius: 16px;
+  }
+  .themed {
+    --borderRadius: 10px;
+    --border: 0px;
+    --multiItemActiveBG: var(--color-primary-bright);
+    --multiItemBG: grey;
+    --background: var(--color-solid);
+    --itemColor: grey;
+    --itemHoverBG: var(--color-primary);
+    --itemHoverColor: white;
+
   }
 </style>

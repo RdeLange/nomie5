@@ -1,4 +1,4 @@
-export type IWidgetTypeUnit = "timeframe" | "cond-style" | "element";
+export type IWidgetTypeUnit = "timeframe" | "cond-style" | "element" | "filter";
 
 export interface IWidgetType {
   id: string;
@@ -69,6 +69,12 @@ export const widgetTypes: Array<IWidgetType> = [
     id: "positivity",
     requires: ["timeframe", "element"],
     optional: [],
+  },
+  {
+    label: "Word Cloud",
+    id: "wordcloud",
+    requires: ["timeframe"],
+    optional: ["filter"],
   },
   // {
   //   label: "Streak",

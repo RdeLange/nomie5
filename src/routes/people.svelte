@@ -70,7 +70,7 @@
         return person.toLowerCase().search(state.searchTerm) > -1;
       });
     } else {
-      return Object.keys(($PeopleStore || {}).people || {});
+      return Object.keys(($PeopleStore || {}).people || {}); 
     }
   }
 

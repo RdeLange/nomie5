@@ -18,6 +18,7 @@
   import WidgetPositivityPie from "./widgets/widget-positivity-pie.svelte";
   import WidgetMap from "./widgets/widget-map.svelte";
   import WidgetStreak from "./widgets/widget-streak.svelte";
+  import WidgetWordCloud from "./widgets/widget-wordcloud.svelte";
 
   import { Interact } from "../../store/interact";
   import { DashboardStore } from "../../store/dashboard-store";
@@ -98,20 +99,29 @@
   function widgetOptionSelected(type: string, widget: Widget) {
     dispatch("action", { type, widget });
   }
+
+  function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
 </script>
+
 
 {#if widget && widget.type !== "text"}
   <div class="dashboard-widget {getClass(widget)}" {id}>
     <div class="widget-header n-row">
-      <TrackerSmallBlock
-        xs
-        truncate
-        novalue
-        element={widget.element}
-        on:click={() => {
-          widgetActions();
-        }}
-      />
+      {#if widget.type !== "wordcloud"}  
+        <TrackerSmallBlock
+          xs
+          truncate
+          novalue
+          element={widget.element}
+          on:click={() => {
+            widgetActions();
+          }}
+        />
+      {:else}
+      <Text size="sm">☁️ {capitalizeFirstLetter(widget.wctheme)}</Text>
+      {/if}  
       <div class="filler" />
       <Button
         size="xs"
@@ -150,6 +160,8 @@
         {:else}
           <div class="value">Unknown {widget.type}</div>
         {/if}
+      {:else if widget.type == "wordcloud"}
+        <WidgetWordCloud {widget} />  
       {:else}
         <div class="value n-row">
           <Spinner size={24} />
