@@ -156,6 +156,7 @@
     "postcss": "^8.2.15",
     "pouchdb": "^7.1.1",
     "rollup-plugin-postcss": "^4.0.0",
+    "sass": "^1.43.5",
     "sortablejs": "^1.10.2",
     "svelte-select": "^4.4.6"
   },

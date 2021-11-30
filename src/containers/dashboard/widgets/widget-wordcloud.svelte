@@ -15,12 +15,16 @@
   let wctheme = widget.wctheme;
   let filters = widget.filters;
   let lastFilters;
+  let primlabel;
+  let seclabel;
   
   
 
   $: if (widget) {
     filters = widget.filters;
     wctheme = widget.wctheme;
+    primlabel = widget.timeRange.label;
+    seclabel = widget.secondairyTimeRange.label;
   }
 
   function addPersons() {
@@ -50,6 +54,11 @@
     getWords();
   }
 
+  // React to Time Range Change
+  $: if(primlabel || seclabel) {
+    getWords();
+  }
+
   async function getWords() {
     addPersons();
     const fulltext = await search();
@@ -75,6 +84,7 @@
     let to = dateRange[1]; // get end
 
     // Query the ledger
+    if (!filters) {filters = ["nojournalselected"];}
     for (const subfilter of filters){
       let book = await LedgerStore.query({
         start: from,

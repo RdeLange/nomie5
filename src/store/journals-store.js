@@ -34,6 +34,10 @@ const toJournalname = (journalname) => {
   return journalname.toLowerCase();
 };
 
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 function getState() {
   let returnState;
   update((state) => {
@@ -189,11 +193,12 @@ const JournalsInit = () => {
       let _state;
       if (journalName) {
         let journalname = toJournalname(journalName).toLowerCase(); // rdl: lower und uppercase word journal is correct
+        let journalDisplayName = capitalizeFirstLetter(journalname);
         let added = false;
         update((state) => {
           state.journals = state.journals || {};
           if (!state.journals.hasOwnProperty(journalname)) {
-            journal = new Journal({ journalname: journalname, displayName: journalName });
+            journal = new Journal({ journalname: journalname, displayName: journalDisplayName });
             state.journals[journalname] = journal;
             added = true;
           }
@@ -214,11 +219,12 @@ const JournalsInit = () => {
       let _state;
       if (journalTemplate.journalname) {
         let journalname = toJournalname(journalTemplate.journalname).toLowerCase(); // rdl: lower und uppercase word journal is correct
+        let journalDisplayName = capitalizeFirstLetter(journalname);
         let added = false;
         update((state) => {
           state.journals = state.journals || {};
           if (!state.journals.hasOwnProperty(journalname)) {
-            journal = new Journal({ journalname: journalname, displayName: journalname, avatar: journalTemplate.avatar,last: journalTemplate.last,notes: journalTemplate.notes,prompts: journalTemplate.prompts });
+            journal = new Journal({ journalname: journalname, displayName: journalDisplayName, avatar: journalTemplate.avatar,last: journalTemplate.last,notes: journalTemplate.notes,prompts: journalTemplate.prompts });
             state.journals[journalname] = journal;
             added = true;
           }

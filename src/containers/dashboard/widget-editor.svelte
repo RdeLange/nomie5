@@ -212,7 +212,6 @@
       themelist.push({value: theme.wordcloudname,label:theme.displayName})
     }
     
-    console.log("check")
   }
 
   function loadJournals() {
