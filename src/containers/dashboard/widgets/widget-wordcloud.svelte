@@ -24,7 +24,11 @@
     filters = widget.filters;
     wctheme = widget.wctheme;
     primlabel = widget.timeRange.label;
-    seclabel = widget.secondairyTimeRange.label;
+    try {
+      seclabel = widget.secondairyTimeRange.label;
+    } catch(error){
+      seclabel = widget.timeRange.label;
+    }
   }
 
   function addPersons() {
