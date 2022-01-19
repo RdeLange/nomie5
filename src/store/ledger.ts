@@ -445,6 +445,7 @@ const ledgerInit = () => {
               };
             })
           );
+          
           // Save any new Context to the Context Store
           ContextStore.save(meta.context);
         }, 1);

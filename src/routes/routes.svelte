@@ -11,6 +11,7 @@
   import PeopleRoute from "./people.svelte";
   import PeriodsRoute from "./periods.svelte";
   import JournalsRoute from "./journals.svelte";
+  import AddonsRoute from "./addons.svelte";
   import SettingsRoute from "./settings.svelte";
   import Setup from "./setup.svelte";
   import TrackRoute from "./track.svelte";
@@ -30,6 +31,7 @@
   <Route path="/history/:date" component={HistoryRoute} />
   <Route path="/people" component={PeopleRoute} />
   <Route path="/journals" component={JournalsRoute} />
+  <Route path="/addons" component={AddonsRoute} />
   <Route path="/periods" component={PeriodsRoute} />
   <Route path="/settings" component={SettingsRoute} />
   <Route path="/settings/export" component={ExportRoute} />

@@ -23,6 +23,9 @@ const NPaths = {
     journals() {
       return `/journals`;
     },
+    addons() {
+      return `/addons`;
+    },
     settings() {
       return "/settings";
     },

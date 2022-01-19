@@ -61,9 +61,11 @@
   import { LastUsed } from "../../store/last-used";
   import { Device } from "../../store/device-store";
   import { SearchStore } from "../../store/search-store";
+  import { AddonsStore } from "../../store/addons-store";
 
   import NPaths from "../../paths";
   import Swipeable from "../../components/swipeable/swipeable.svelte";
+  import { runBlocklyScheduler } from "../../containers/addons/nomieblockly/addon-nblockly-start-schedule.svelte";
 
   // Consts
 
@@ -73,8 +75,10 @@
   let foundTrackers = null; // for search results
   let boardTrackers = []; // Actual array to display to user
   let daysSinceLastBackup = 0;
+  let daysSinceLastScheduler = 0;
   // Browser Title
   let appTitle = "(Loading)";
+  let blocklyaddoninstalled = false;
 
   // Data Storage
   let state = {
@@ -124,9 +128,23 @@
   };
 
   $: if ($UserStore.meta) {
-    daysSinceLastBackup = dayjs().diff(dayjs(new Date(user.meta.lastBackup || null)), "day");
+    daysSinceLastBackup = dayjs().diff(dayjs(new Date(user.meta.lastBackup || null)), "day");}
+
+  $: if (AddonsStore.get("nblockly")){  
+    let blocklyaddon = AddonsStore.get("nblockly");
+    if (blocklyaddon.configuration.length !== 0) {
+    blocklyaddoninstalled = true;
+    daysSinceLastScheduler = dayjs().diff(dayjs(new Date(blocklyaddon.configuration.lastcentralschedule || null)), "day");}
+    else {blocklyaddoninstalled = false;
+      daysSinceLastScheduler = 0}
+
   }
 
+  $: if (daysSinceLastScheduler >= 1) {
+    setTimeout(() => {runBlocklyScheduler()},1000);
+    daysSinceLastScheduler = 0;
+  }
+  
   /**
    * Add some tips to help new users
    * This will stop showing after 12 nomie launches
@@ -550,6 +568,11 @@
           <Spinner />
         </div>
       {:else}
+      {#if blocklyaddoninstalled}
+      <div class="pt-2 pb-1 text-center backup">
+      <Text inline size="sm" faded>{daysSinceLastScheduler} days since last schedule was executed</Text>
+      </div>
+      {/if}
         {#if daysSinceLastBackup > 6 && $UserStore.launchCount > 10 && $UserStore.storageType == 'local' && $UserStore.meta.hideBackup == false}
           <div class="container-sm">
             <div class="pt-2 pb-1 text-center backup">

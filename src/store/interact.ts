@@ -132,6 +132,10 @@ const interactInit = () => {
       active: null,
       initialview: "check-in",
     },
+    addons: {
+      active: null,
+      initialview: "main",
+    },
     trackerSelector: {
       show: false,
       multiple: false,
@@ -399,6 +403,13 @@ const interactInit = () => {
     journal(journalname) {
       update((d) => {
         d.journals.active = journalname;
+        return d;
+      });
+    },
+    addon(addonname,initialview) {
+      update((d) => {
+        d.addons.active = addonname;
+        d.addons.initialview = initialview;
         return d;
       });
     },

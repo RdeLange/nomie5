@@ -74,8 +74,6 @@
     // .string,
     .tracker,
     .person,
-    .journal,
-    .period,
     .context {
       padding-right: 3px;
       flex-shrink: 0;

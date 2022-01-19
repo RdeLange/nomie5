@@ -12,6 +12,7 @@
     <div class="chart-value">
       <BarChart
         showperiods = {widget.showperiods}
+        showlegend = {widget.showlegend}
         widgetstats= {widget.stats}
         height={100}
         showSelected={false}
@@ -54,6 +55,7 @@
     <div class="chart-value">
       <BarChart
         showperiods = {widget.showperiods}
+        showlegend = {widget.showlegend}
         widgetstats= {widget.stats}
         height={100}
         showSelected={false}
@@ -94,6 +96,7 @@
     <div class="chart-value">
       <BarChart
         showperiods = {widget.showperiods}
+        showlegend = {widget.showlegend}
         widgetstats= {widget.stats}
         height={100}
         showSelected={false}

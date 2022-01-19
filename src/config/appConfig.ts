@@ -8,6 +8,7 @@ export default {
   data_people_key: "people-v5",
   data_periods_key: "periods-v5",
   data_journals_key: "journals-v5",
+  data_addons_key: "addons-v5",
   book_root: "v5-data/books",
   tracker_file: "trackers.json",
   board_file: "boards.json",

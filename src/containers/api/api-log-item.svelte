@@ -22,7 +22,7 @@
     {new Date(log.date).toLocaleTimeString()}
   </Text>
   <div slot="right">
-    <div className="n-col justify-center items-center">
+    <div class="n-col justify-center items-center">
       {#if log.discarded}
         <Button
           size="xs"

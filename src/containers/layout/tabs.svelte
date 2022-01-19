@@ -13,6 +13,7 @@
   import NPaths from "../../paths";
   import { UserStore } from "../../store/user-store";
 import { ApiStore } from "../api/api-store";
+  import Menu from "./circlemenu/menu.svelte";
 // import { NomieAPI } from "../../store/napi";
   
   const state = {
@@ -74,24 +75,35 @@ import { ApiStore } from "../api/api-store";
 {#if state.mounted}
   <nav id="app-tabs" class={hideLabels ? 'compact' : ''}>
     <div class="mx-auto n-row mw-500px">
-
-      <AppTab link={NPaths.routes.history()} icon="calendar" label={Lang.t('tabs.history', 'History')} />
-      {#if $FeatureStore.dashboard}
+      {#if !$FeatureStore.circlemenu}
+        <AppTab link={NPaths.routes.history()} icon="calendar" label={Lang.t('tabs.history', 'History')} />
+        {#if $FeatureStore.dashboard}
+          <AppTab link={NPaths.routes.dashboard()} icon="report" label={Lang.t('tabs.dashboard', 'Dash')} />
+        {/if}
+        <AppTab link="/" icon="grid"  notify={$TrackerStore.timers.length ? true : false} label={Lang.t('tabs.track', 'Track')}>
+        </AppTab>
+        {#if $FeatureStore.people}
+          <AppTab link={NPaths.routes.people()} icon="user" label={Lang.t('tabs.people', 'People')} />
+        {/if}
+        {#if $FeatureStore.journals}
+          <AppTab link={NPaths.routes.journals()} icon="book" label={Lang.t('tabs.journals', 'Journals')} />
+        {/if}
+        {#if $FeatureStore.addons}
+        <AppTab link={NPaths.routes.addons()} icon="puzzle" label={Lang.t('tabs.addons', 'Addons')} />
+        {/if}
+        {#if $FeatureStore.periods}
+          <AppTab link={NPaths.routes.periods()} icon="eye" label={Lang.t('tabs.periods', 'Periods')} />
+        {/if}
+          <AppTab link={NPaths.routes.settings()} notify={$ApiStore.items.length ? true : false} icon="settings" label={Lang.t('tabs.settings', 'Settings')} />
+      {/if}
+      {#if $FeatureStore.circlemenu}
+        <Menu></Menu>
+        <AppTab link={NPaths.routes.history()} icon="calendar" label={Lang.t('tabs.history', 'History')} />
         <AppTab link={NPaths.routes.dashboard()} icon="report" label={Lang.t('tabs.dashboard', 'Dash')} />
-      {/if}
-      <AppTab link="/" icon="grid"  notify={$TrackerStore.timers.length ? true : false} label={Lang.t('tabs.track', 'Track')}>
-      </AppTab>
-      {#if $FeatureStore.people}
-        <AppTab link={NPaths.routes.people()} icon="user" label={Lang.t('tabs.people', 'People')} />
-      {/if}
-      {#if $FeatureStore.journals}
-        <AppTab link={NPaths.routes.journals()} icon="book" label={Lang.t('tabs.journals', 'Journals')} />
-      {/if}
-      {#if $FeatureStore.periods}
-        <AppTab link={NPaths.routes.periods()} icon="eye" label={Lang.t('tabs.periods', 'Periods')} />
-      {/if}
+        <AppTab link="/" icon="grid"  notify={$TrackerStore.timers.length ? true : false} label={Lang.t('tabs.track', 'Track')}>
+        </AppTab>
         <AppTab link={NPaths.routes.settings()} notify={$ApiStore.items.length ? true : false} icon="settings" label={Lang.t('tabs.settings', 'Settings')} />
-
+      {/if}
     </div>
-  </nav>
+  </nav> 
 {/if}

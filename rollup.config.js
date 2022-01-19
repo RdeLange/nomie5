@@ -48,8 +48,7 @@ const writeIndexFile = function () {
 };
 
 export default [
-  {
-    input: "src/main.js",
+  { input: "src/main.js",
     output: {
       sourcemap: !production,
       format: "iife",
@@ -60,6 +59,7 @@ export default [
       },
       intro: "const global = window;",
       indent: false,
+      inlineDynamicImports: true,
     },
     plugins: [
       builtins(),
@@ -91,7 +91,7 @@ export default [
       }),
       typescript({ sourceMap: !production }),
       json(),
-      resolve(),
+      resolve({browser: true}),
       commonjs({ sourceMap: false, namedExports: { "svelte-hammer": ["Hammer", "pan", "pinch", "press", "rotate", "swipe", "tap"] } }),
 
       // generateSW({
@@ -124,6 +124,7 @@ export default [
       sourcemap: false,
       format: "cjs",
       file: "public/service-worker.js",
+      inlineDynamicImports: true,
     },
     plugins: [
       builtins(),

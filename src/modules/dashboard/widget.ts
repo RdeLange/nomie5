@@ -15,7 +15,7 @@ import NDate from "../../utils/ndate/ndate";
 export interface WidgetDateConfig {
   date?: Dayjs;
   add?: Array<any>;
-  subtract?: Array<any>;
+  subtract?: Array<any>; 
   startOf?: OpUnitType;
   endOf?: OpUnitType;
 }
@@ -123,6 +123,7 @@ export interface WidgetConfig {
   secStats1?: any;
   secStats2?: any;
   showperiods?:boolean;
+  showlegend?:boolean;
   wctheme?: string;
   filters?: any;
 }
@@ -155,6 +156,7 @@ export class Widget {
   public secStats1?: any;
   public secStats2?: any;
   public showperiods?: boolean = false;
+  public showlegend?: boolean = true;
   public wctheme?: string = "persons";
   public filters?: any;
 
@@ -176,6 +178,7 @@ export class Widget {
     // Including Avg
     this.includeAvg = payload.includeAvg ? true : false;
     this.showperiods = payload.showperiods ? true : false;
+    this.showlegend = payload.showlegend ? true : false;
     this.adbTimeRangeEnabled = payload.adbTimeRangeEnabled ? true : false;
     // If a timeRange
     if (payload.timeRange) {
@@ -253,7 +256,7 @@ export class Widget {
    * hard code the this-week and last-week conditions.
    */
 
-  getStartDate(weekStartsOn: "1" | "2"): Dayjs {
+  getStartDate(weekStartsOn: "1" | "2"): Dayjs { 
     if (this.timeRange && ["this-week", "last-week"].indexOf(this.timeRange.id) > -1) {
       // This is hacky
       let startOfWeek = this.getStartOfWeek(weekStartsOn);

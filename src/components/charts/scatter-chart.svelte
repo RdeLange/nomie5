@@ -29,6 +29,7 @@
   export let ignoreZero2: boolean = false;
   export let ignoreZero3: boolean = false;
   export let showstats: string = "none";
+  export let showlegend: boolean = true;
 
   // Generate a random ID for this Component
   const chartId = `chart-${nid()}`;
@@ -40,6 +41,7 @@
   let lastPoints2 = [];
   let lastPoints3 = [];
   let lastshowstats = showstats;
+  let lastshowlegend = showlegend;
 
   export let selected = undefined;
 
@@ -61,7 +63,11 @@
     loadData();
   }
 
-  
+  $: if (showlegend !== lastshowlegend) {
+    lastshowlegend = showlegend;
+    theChart.options.legend.display = showlegend;
+    theChart.update();
+  }  
 
   function combinedata(primairydata, secondairydata) {
     const length = primairydata.length;
@@ -177,7 +183,7 @@
         },
         defaultFontSize: 10,
         legend: {
-          display: true,
+          display: showlegend,
           position: "right",
           labels: {
             boxWidth: 5,

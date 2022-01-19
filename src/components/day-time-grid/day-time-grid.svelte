@@ -43,7 +43,8 @@
 
   const hours = [];
   const dateStart = dayjs().startOf("day");
-  for (var i = 0; i < 24; i++) {
+  var i = 0;
+  for (i = 0; i < 24; i++) {
     let date = dateStart.add(i, "hour");
     hours.push(trimHour($UserStore.meta.is24Hour ? date.format("H") : date.format("ha")));
   }

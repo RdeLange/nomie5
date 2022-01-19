@@ -50,15 +50,7 @@
 </script>
 
 <style>
-html,body {
-  height: 100vh;
-  width: 100vw;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+
   
 ul.cloud {
   list-style: none;
@@ -103,10 +95,6 @@ ul.cloud a[data-weight="7"] { --size: 7; }
 ul.cloud a[data-weight="8"] { --size: 8; }
 ul.cloud a[data-weight="9"] { --size: 9; }
 
-ul[data-show-value] a::after {
-  content: " (" attr(data-weight) ")";
-  font-size: 1rem;
-}
 
 ul.cloud li:nth-child(2n+1) a { --color: #181; }
 ul.cloud li:nth-child(3n+1) a { --color: #33a; }

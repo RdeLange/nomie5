@@ -328,7 +328,7 @@ const createApiStore = () => {
     toLog(apiLog:NapiLog): NLog {
       let log: NLog = new NLog(apiLog);
       log.end = apiLog.date ? new Date(apiLog.date).getTime() : new Date().getTime();
-      return log;
+      return log; 
     },
     async restoreKeys() {
       // Prepare user for needed info

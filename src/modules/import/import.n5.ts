@@ -1,4 +1,4 @@
-import type { INormalizedImport, ITrackers, IPeople, IPeriods, IJournals } from "./import";
+import type { INormalizedImport, ITrackers, IPeople, IPeriods, IJournals, IAddons} from "./import";
 import TrackerConfig from "../tracker/tracker";
 import Board from "../board/board";
 import type { IBoard } from "../board/board";
@@ -8,6 +8,7 @@ import { Dashboard } from "../dashboard/dashboard";
 import Person from "../person/person";
 import Period from "../period/period";
 import Journal from "../journal/journal";
+import Addon from "../addon/addon";
 
 import Location from "../locate/Location";
 
@@ -43,6 +44,14 @@ function getJournals(fileData: any): IJournals {
   return journals;
 }
 
+function getAddons(fileData: any): IAddons {
+  let addons: IAddons = {};
+  Object.keys(fileData.addons || {}).forEach((addonId) => {
+    addons[addonId] = new Addon(fileData.addonss[addonId]);
+  });
+  return addons;
+}
+
 function getBoards(fileData: any): Array<IBoard> {
   return (fileData.boards || []).map((board) => {
     return new Board(board);
@@ -76,6 +85,7 @@ export function N5ImportNormalizer(importer: any): INormalizedImport {
     people: getPeople(importer),
     periods: getPeriods(importer),
     journals: getJournals(importer),
+    addons: getAddons(importer),
     context: importer.context || [],
     locations: (importer.locations || []).map((loc) => {
       return new Location(loc);

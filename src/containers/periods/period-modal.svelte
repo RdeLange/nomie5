@@ -64,7 +64,7 @@
     );
     if (confirmed) {
       await PeriodsStore.deletePeriod(activePeriod);
-      Interact.toast(`${activePeriod.periodname} removed`);
+      Interact.toast(`${activePeriod.periodname} removed`); 
       close();
     }
   }

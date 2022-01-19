@@ -141,13 +141,7 @@
 </script>
 
 <style>
-  .applyButton {
-    width: var(--applyButtonWidth, 25px);
-    height: var(--applyButtonHeight, 25px);
-    background-color: var(--applyButtonBackgroundColor, #007bff);
-    color: var(--applyButtonColor, #fff);
-    padding: var(--applyButtonPadding, 0px);
-  }
+  
   .sliderEnd {
     background: var(--sliderEndBackgroundColor, #007bff);
     height: var(--sliderEndHeight, 10px);

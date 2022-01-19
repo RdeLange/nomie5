@@ -14,7 +14,7 @@
 </script>
 
 {#if journal}
-  <ShortcutButton
+  <ShortcutButton 
     compact
     hideValue
     hideMore = {false}

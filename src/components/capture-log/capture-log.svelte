@@ -41,9 +41,7 @@
   import PositivityMenu from "../positivity-selector/positivity-menu.svelte";
   import Icon from "../icon/icon.svelte";
   import DatePicker from "../date-picker/date-picker.svelte";
-  import TrackableElement, {
-    toElement,
-  } from "../../modules/trackable-element/trackable-element";
+  import TrackableElement, { toElement} from "../../modules/trackable-element/trackable-element";
   import extract from "../../utils/extract/extract";
 
   // Consts

@@ -150,7 +150,7 @@ export default class NLog {
         if (word.length > 1 && word.substr(0, 1) == "#") {
           return false;
         } else {
-          return true;
+          return true; 
         }
       })
       .join(" ");

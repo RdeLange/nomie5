@@ -1,6 +1,6 @@
 {
   "name": "nomie",
-  "version": "5.6.4r7",
+  "version": "5.6.4r8",
   "homepage": "https://nomie.app",
   "bugs": {
     "url": "https://github.com/open-nomie/nomie/issues",
@@ -27,7 +27,7 @@
     "dev:ip": "node build-tools/move-resources.js && concurrently \"run-p start:ip autobuild\" \"npm run scss\"",
     "start": "sirv public --single",
     "start:og": "sirv public --cors --single --dev ",
-    "start:dev": "sirv public --cors --single --dev --host 0.0.0.0",
+    "start:dev": "sirv public --cors --single --dev --host 0.0.0.0 --port 5555",
     "test": "jest",
     "todo": "node build-tools/get-todo.js",
     "patch": "npm run version_patch && npm run todo",
@@ -66,6 +66,7 @@
     "@types/lodash": "^4.14.161",
     "@types/papaparse": "^5.2.2",
     "babel-jest": "^26.3.0",
+    "blockly": "^5.20210325.1",
     "blockstack": "^21.1.1",
     "boolean-parser": "0.0.2",
     "commitizen": "^4.2.4",
@@ -118,7 +119,7 @@
     "semver": "^6.2.0",
     "sirv-cli": "^0.4.4",
     "style-loader": "^0.23.1",
-    "svelte": "^3.20.1",
+    "svelte": "^3.44.3",
     "svelte-awesome": "^1.4.1",
     "svelte-check": "^0.1.55",
     "svelte-hammer": "^0.1.6",
@@ -144,6 +145,8 @@
     "cypress": "^4.11.0"
   },
   "dependencies": {
+    "@blockly/field-date": "^5.0.1",
+    "@blockly/theme-dark": "^2.0.7",
     "@blockstack/connect": "^2.12.1",
     "@composi/gestures": "^1.0.9",
     "@egjs/hammerjs": "^2.0.17",
@@ -152,13 +155,17 @@
     "chart.js": "^2.9.4",
     "chartjs-plugin-annotation": "^0.5.7",
     "concurrently": "^6.4.0",
+    "js-interpreter": "^2.2.0",
     "nomie-utils-r": "^0.1.12-r1",
     "postcss": "^8.2.15",
     "pouchdb": "^7.1.1",
     "rollup-plugin-postcss": "^4.0.0",
     "sass": "^1.43.5",
     "sortablejs": "^1.10.2",
-    "svelte-select": "^4.4.6"
+    "svelte-blockly": "^0.1.0",
+    "svelte-loadable": "^1.5.1",
+    "svelte-select": "^4.4.6",
+    "svelte-tiny-virtual-list": "^1.1.7"
   },
   "license": "MIT"
 }

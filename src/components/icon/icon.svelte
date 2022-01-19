@@ -8,6 +8,7 @@
   import {
     ArrowCircleUp,
     ArrowLeft,
+    FastForward,
     Exclamation,
     ArrowUp,
     ArrowsExpand,
@@ -34,6 +35,7 @@
     Plus,
     PlusCircle,
     PresentationChartLine,
+    Puzzle,
     Refresh,
     Search,
     Share,
@@ -76,6 +78,7 @@
     Duplicate,
     Play,
     Stop,
+    Save,
   } from "svelte-hero-icons";
 
   export let name = "add";
@@ -109,12 +112,12 @@
     arrowUp: ArrowUp,
     arrowsLeftRight: SwitchHorizontal,
     calendar: Calendar,
+    fastforward: FastForward,
     chart: ChartBar,
     chart2: ChartSquareBar,
     play: Play,
     stop: Stop,
     cake: Cake,
-    expand: ArrowsExpand,
     checkmark: Check,
     checkmarkFilled: CheckCircle,
     checkmarkOutline: CheckCircle,
@@ -168,6 +171,8 @@
     eyeOff: EyeOff,
     compose: PencilAlt,
     book: BookOpen,
+    puzzle: Puzzle,
+    save: Save,
   };
 </script>
 

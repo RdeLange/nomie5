@@ -17,7 +17,7 @@
   import Text from "./../../components/text/text.svelte";
   import TrackerSmallBlock from "../../components/tracker-small-block/tracker-small-block.svelte";
   // modules
-  import StatsProcessor from "../../modules/stats/statsV5";
+  import StatsProcessor from "../../modules/stats/statsV5"; 
   import { Widget } from "../../modules/dashboard/widget";
   import ToggleSwitch from "../../components/toggle-switch/toggle-switch.svelte";
   import Swipeable from "../../components/swipeable/swipeable.svelte"

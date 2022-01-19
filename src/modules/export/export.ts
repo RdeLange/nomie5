@@ -7,6 +7,7 @@ import { Interact } from "../../store/interact";
 import { PeopleStore } from "../../store/people-store";
 import { PeriodsStore } from "../../store/periods-store";
 import { JournalsStore } from "../../store/journals-store";
+import { AddonsStore } from "../../store/addons-store";
 
 import { Locations } from "../../store/locations";
 import { DashboardStore } from "../../store/dashboard-store";
@@ -17,7 +18,7 @@ import type Board from "../board/board";
 import type NLog from "../nomie-log/nomie-log";
 import type { Dashboard } from "../dashboard/dashboard";
 import type Location from "../locate/Location";
-import type { ITrackers, IPeople, IPeriods, IJournals } from "../import/import";
+import type { ITrackers, IPeople, IPeriods, IJournals, IAddons } from "../import/import";
 
 export interface IBackupItems {
   nomie: {
@@ -32,6 +33,7 @@ export interface IBackupItems {
   people: IPeople;
   periods: IPeriods;
   journals: IJournals;
+  addons: IAddons;
   locations: Array<Location>;
   dashboards: Array<Dashboard>;
   context: Array<string>;
@@ -59,6 +61,7 @@ export default class Export {
       people: options.people || {},
       periods: options.periods || {},
       journals: options.journals || {},
+      addons: options.addons || {},
       locations: options.locations || [],
       dashboards: options.dashboards || [],
       context: options.context || [],
@@ -81,6 +84,11 @@ export default class Export {
       // Get Journals
       let journals = await JournalsStore.getJournals();
       this.backup.journals = journals || {};
+
+      this.fireChange("Addons...");
+      // Get Addons
+      let addons = await AddonsStore.getAddons();
+      this.backup.addons = addons || {};
 
       this.fireChange("Dashboards...");
       let dashboards = await DashboardStore.get();
@@ -139,6 +147,12 @@ export default class Export {
   }
 
   getJournals() {
+    return Storage.get(`${config.data_root}/${config.tracker_file}`).then((res) => {
+      return res;
+    });
+  }
+ 
+  getAddons() {
     return Storage.get(`${config.data_root}/${config.tracker_file}`).then((res) => {
       return res;
     });

@@ -193,7 +193,7 @@ const JournalsInit = () => {
       let _state;
       if (journalName) {
         let journalname = toJournalname(journalName).toLowerCase(); // rdl: lower und uppercase word journal is correct
-        let journalDisplayName = capitalizeFirstLetter(journalname);
+        let journalDisplayName = capitalizeFirstLetter(journalName);
         let added = false;
         update((state) => {
           state.journals = state.journals || {};

@@ -29,6 +29,7 @@
   export let hoursUsed = [];
   export let journal: boolean = false;
   export let journalcolor: string = "#ffffff";
+  export let addon: boolean = false;
 
  
   let clickSkip;
@@ -289,7 +290,7 @@
   }
 </style>
 
-{#if !journal}  
+{#if !journal && !addon}  
   <Button
     {id}
     ariaLabel={title || 'button'}
@@ -390,6 +391,55 @@
         <div class="truncate subtitle" style="opacity:0.6;">{subtitle}</div>
       {/if}
       <slot name="subtitle" />
+    </div>
+  </Button>
+{/if}
+
+{#if addon}  
+  <Button
+    {id}
+    ariaLabel={title || 'button'}
+    color="primairy"
+    className="{className} shortcut-button d-flex flex-column {is.truthy(value) ? 'has-value' : 'no-value'}
+    {compact ? 'compact' : ''}"
+    style={`--tracker-color:${color}; background-color:${value ? {color} || 'var(--color-primary)' : 'var(--color-solid)'}; ${style}`}
+    on:longpress={() => {
+      dispatch('longpress');
+      clickSkip = true;
+    }}
+    on:click={() => {
+      if (!clickSkip) {
+        dispatch('click');
+      }
+      clickSkip = undefined;
+    }}>
+    <div class="highlight {oneTap ? 'one-tap' : ''}">
+      <TimeBalls color="#FFF" hours={hoursUsed} />
+    </div>
+    
+    <div class="n-row top" >
+      <div class="emoji" style={is.truthy(value) ? 'color:#FFF' : `color:${color}`}>
+        {#if emoji}
+          <Avatar {emoji} 
+          size={200} />
+        {/if}
+        <slot name="emoji" />
+      </div>
+      {#if !hideMore}
+        <button
+          aria-label="Tracker Options"
+          class="more {moreIcon !== 'more' ? 'icon-other' : ''} p-0"
+          on:click|preventDefault|stopPropagation={more}>
+          <Icon name={moreIcon} size="16" />
+        </button>
+      {/if}
+    </div>
+    <slot />
+    <div class="text-left bottom" style="padding-bottom:1px;">
+      {#if title}
+        <div class="title">{title}</div>
+      {/if}
+      
     </div>
   </Button>
 {/if}

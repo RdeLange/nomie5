@@ -74,7 +74,7 @@
     let wcarray = [];
     const thistheme = wctemplates.find(element => element.wordcloudname == wctheme);
     for (const wcterm of thistheme.terms){
-      var re = new RegExp(wcterm, 'gi');
+      var re = new RegExp(" "+wcterm+" ", 'gi');
       var counts = (fulltext.match(re) || []).length;
       if (counts > 0){
         wcarray.push({text:wcterm,count:counts});}

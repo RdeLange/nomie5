@@ -12,6 +12,7 @@
   {#if widget.secElement2}
     <div class="chart-value">
       <ScatterChart
+        showlegend = {widget.showlegend}
         height={100}
         showSelected={false}
         type={widget.type == "linechart" ? "line" : "bar"}
@@ -51,6 +52,7 @@
   {:else if widget.secElement1}
     <div class="chart-value">
       <ScatterChart
+      showlegend = {widget.showlegend}
         height={100}
         showSelected={false}
         type={widget.type == "linechart" ? "line" : "bar"}
@@ -88,6 +90,7 @@
   {:else}
     <div class="chart-value">
       <ScatterChart
+        showlegend = {widget.showlegend}
         height={100}
         showSelected={false}
         type={widget.type == "linechart" ? "line" : "bar"}

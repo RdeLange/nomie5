@@ -20,7 +20,7 @@
   import { widgetTypes } from "./widgetTypes";
   import type { IWidgetType } from "./widgetTypes";
 
-  import { Interact } from "../../store/interact";
+  import { Interact } from "../../store/interact"; 
   import { Lang } from "../../store/lang";
   import dayjs from "dayjs";
  // import { Dayjs } from "dayjs";
@@ -80,7 +80,7 @@
    * On Date Type Change
    **/
   $: if (dateType) {
-      if (lastdateType != dateType) {
+      if (lastdateType != dateType) { 
         lastdateType = dateType;
         let timeFrame = timeFrames.find((t) => t.id == dateType);
           if (!value.adbTimeRangeEnabled){
@@ -739,6 +739,14 @@
               <ToggleSwitch bind:value={value.showperiods} />
             </div>
           </ListItem>
+        {/if}
+
+        {#if widgetTypeId == "barchart" || widgetTypeId == "linechart" || widgetTypeId == "scatterchart"}
+        <ListItem bg="transparent" title="Show Legend" className="p-0">
+          <div slot="right">
+            <ToggleSwitch bind:value={value.showlegend} />
+          </div>
+        </ListItem>
         {/if}
 
         {#if widgetType && [...widgetType.requires, ...widgetType.optional].indexOf("cond-style") > -1}

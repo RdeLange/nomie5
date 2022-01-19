@@ -126,7 +126,30 @@
         }} />
     </div>
   </ListItem>
-  <hr class="divider center" />
+  <ListItem
+    className="py-2"
+    title={Lang.t('settings.feature-addons-tracking', 'Addons Tracking')}
+    description={Lang.t('settings.feature-addons-description', 'Keep track of your Addons')}>
+    <div slot="right" class="pl-2">
+      <ToggleSwitch
+        value={$FeatureStore.addons}
+        on:change={(change) => {
+          FeatureStore.toggle('addons', change.detail);
+        }} />
+    </div>
+  </ListItem>
+  <ListItem
+    className="py-2"
+    title={Lang.t('settings.feature-circlemenu', 'Enable Circle Menu (beta)')}
+    description={Lang.t('settings.feature-circlemenu-description', 'Enable experimental circle menu')}>
+    <div slot="right" class="pl-2">
+      <ToggleSwitch
+        value={$FeatureStore.circlemenu}
+        on:change={(change) => {
+          FeatureStore.toggle('circlemenu', change.detail);
+        }} />
+    </div>
+  </ListItem>
   <hr class="divider center" />
   <ListItem
     title={Lang.t('settings.use-location', 'Track Location')}

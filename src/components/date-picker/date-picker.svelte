@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang="ts"> 
   import type { Dayjs } from "dayjs";
   import Button from "../button/button.svelte";
   // vendors
@@ -39,6 +39,8 @@
   function fireChange(evt: any) {
     date = new Date(evt.target.value);
     time = date.getTime();
+    console.log("change:")
+    console.log(time);
     dispatch("change", dayjs(new Date(date)));
   }
 </script>

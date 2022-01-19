@@ -14,7 +14,7 @@
   import { Interact } from "../store/interact";
   import { LedgerStore } from "../store/ledger";
   import { SearchStore } from "../store/search-store";
-  import TrackableElement from "../modules/trackable-element/trackable-element";
+  import TrackableElement from "../modules/trackable-element/trackable-element"; 
   import dayjs from "dayjs";
   import Empty from "../containers/empty/empty.svelte";
   export const location = undefined;

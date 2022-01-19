@@ -2,7 +2,7 @@
   import dayjs from "dayjs";
   import type { Dayjs } from "dayjs";
 
-  import { onMount, createEventDispatcher } from "svelte";
+  import { onMount, createEventDispatcher } from "svelte"; 
 
   import Calendar from "../calendar/calendar.svelte";
   import Text from "../text/text.svelte";

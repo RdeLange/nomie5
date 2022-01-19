@@ -78,7 +78,7 @@
     for (var i = 0; i < journalTemplates.length; i++) {
       let tmp ="";
       tmp = journalTemplates[i];
-      buttons.push({title: journalTemplates[i].journalname,click: () => {
+      buttons.push({title: journalTemplates[i].displayName,click: () => {
             chooseTemplate(tmp);}, icon:"addOutline"})
       
     }

@@ -42,6 +42,8 @@
     trackers: { running: false, done: false },
     people: { running: false, done: false },
     periods: { running: false, done: false },
+    journals: { running: false, done: false },
+    addons: { running: false, done: false },
     dashboards: { running: false, done: false },
     context: { running: false, done: false },
     all: { running: false, done: false },
@@ -152,6 +154,26 @@
         "periods",
         async () => {
           return await importLoader.importPeriods();
+        },
+        confirmation
+      );
+    },
+
+    async importJournals(confirmation: boolean = false) {
+      return await methods.run(
+        "journals",
+        async () => {
+          return await importLoader.importJournals();
+        },
+        confirmation
+      );
+    },
+
+    async importAddons(confirmation: boolean = false) {
+      return await methods.run(
+        "addons",
+        async () => {
+          return await importLoader.importAddons();
         },
         confirmation
       );
@@ -420,6 +442,40 @@
       {:else}
         <ListItem title={Lang.t('general.periods', 'Periods')}>
           <div slot="left">⏳</div>
+          <div slot="right">0</div>
+        </ListItem>
+      {/if}
+
+      <!-- Journals -->
+      {#if (Object.keys(importLoader.normalized.journals) || []).length > 0}
+        <ImporterItem
+          emoji="📔"
+          title={Lang.t('general.journals', 'Journals')}
+          count={(Object.keys(importLoader.normalized.journals) || []).length}
+          bind:status={importing.journals}
+          on:import={() => {
+            methods.importJournals(true);
+          }} />
+      {:else}
+        <ListItem title={Lang.t('general.journals', 'Journals')}>
+          <div slot="left">📔</div>
+          <div slot="right">0</div>
+        </ListItem>
+      {/if}
+
+      <!-- Addons -->
+      {#if (Object.keys(importLoader.normalized.addons) || []).length > 0}
+        <ImporterItem
+          emoji="🧩"
+          title={Lang.t('general.addons', 'Addons')}
+          count={(Object.keys(importLoader.normalized.addons) || []).length}
+          bind:status={importing.addons}
+          on:import={() => {
+            methods.importAddons(true);
+          }} />
+      {:else}
+        <ListItem title={Lang.t('general.addons', 'Addons')}>
+          <div slot="left">🧩</div>
           <div slot="right">0</div>
         </ListItem>
       {/if}

@@ -14,6 +14,7 @@
 
   //Chart.register(annotationPlugin);
   export let showperiods: boolean = false;
+  export let showlegend: boolean = true;
   export let widgetstats: any;
   export let math = "";
   export let labels = [];
@@ -53,6 +54,7 @@
   let lastPoints3 = [];
   let lastshowstats = showstats;
   let lastshowperiods = showperiods;
+  let lastshowlegend = showlegend;
   let allperiods = [];
   let periodannotations =[];
 
@@ -94,6 +96,12 @@
   $: if (showperiods !== lastshowperiods) {
     lastshowperiods = showperiods;
     periodsUpdate("limitted");}
+
+  $: if (showlegend !== lastshowlegend) {
+    lastshowlegend = showlegend;
+    theChart.options.legend.display = showlegend;
+    theChart.update();
+  }  
     
   function periodsUpdate(type){
     if (showperiods){
@@ -337,7 +345,7 @@
         responsive: true,
         defaultFontSize: 10,
         legend: {
-          display: true,
+          display: showlegend,
           position: "right",
           labels: {
             filter(legendItem, data) {

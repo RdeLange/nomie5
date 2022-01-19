@@ -181,10 +181,7 @@
 </script>
 
 <style lang="scss">
-  .file-input-wraper {
-    height: 1px;
-    overflow: hidden;
-  }
+  
   :global(.person-checkin .btn-group .active div) {
     font-size: 2em !important;
   }
@@ -201,7 +198,7 @@
       <div class="main">
         <div class="n-row">
           {#if colorrefreshed}
-            <a><SvgIcon d={JournalIcon} linefill={activeJournal.journalcolor} height="45" width="45"/></a>
+            <SvgIcon d={JournalIcon} linefill={activeJournal.journalcolor} height="45" width="45"/>
             
             &nbsp; {activeJournal.getDisplayName()}
           {/if}

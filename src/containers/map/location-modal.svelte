@@ -189,7 +189,7 @@
   </header>
   {#if showModal}
     <section class="n-panel vertical">
-      <div className="n-panel" style="height:225px; border-bottom:var(--color-solid-2);">
+      <div class="n-panel" style="height:225px; border-bottom:var(--color-solid-2);">
         <!-- MAP -->
         <div style="height: 200px;">
           <NMap hideFavorite on:change={mapChange} locations={state.active ? [state.active] : []} picker={true} bind:this={map} />
